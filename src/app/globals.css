@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+/*
+ * Color tokens pulled directly from the Figma file's "Primitives" and
+ * "Semantic" variable collections (Mirage/Trinidad/Candlelight/Seagull),
+ * so the built page matches the design system, not a re-guessed palette.
+ */
+:root {
+  /* Primitives */
+  --color-mirage-950: #181f2b;
+  --color-mirage-900: #2c3a4e;
+  --color-mirage-800: #30425c;
+  --color-mirage-700: #364d6e;
+  --color-mirage-300: #a6bad3;
+  --color-mirage-200: #d0dae7;
+  --color-mirage-100: #eaeef4;
+  --color-mirage-50: #fcfdff;
+  --color-seagull-400: #4ebbe2;
+  --color-seagull-100: #e3f2fb;
+  --color-candlelight-500: #fcdb04;
+  --color-candlelight-50: #ffffe7;
+  --color-trinidad-700: #ba4214;
+  --color-trinidad-600: #de5715;
+  --color-trinidad-400: #f39044;
+  --color-white: #ffffff;
+
+  /* Semantic tokens (alias -> primitive, same mapping as the Figma file) */
+  --color-bg-dark: var(--color-mirage-950);
+  --color-bg-dark-raised: var(--color-mirage-900);
+  --color-bg-light: var(--color-mirage-50);
+  --color-bg-light-muted: var(--color-mirage-100);
+  --color-bg-card: var(--color-white);
+  --color-bg-accent-soft: var(--color-seagull-100);
+  --color-text-on-light: var(--color-mirage-950);
+  --color-text-on-light-muted: var(--color-mirage-700);
+  --color-text-on-dark: var(--color-mirage-50);
+  --color-text-on-dark-muted: var(--color-mirage-200);
+  --color-text-accent-on-dark: var(--color-candlelight-500);
+  --color-text-accent-on-light: var(--color-trinidad-700);
+  --color-action-primary: var(--color-candlelight-500);
+  --color-action-primary-text: var(--color-mirage-950);
+  --color-accent-sky: var(--color-seagull-400);
+  --color-accent-warm: var(--color-trinidad-600);
+  --color-accent-sun: var(--color-candlelight-500);
+  --color-border-light: var(--color-mirage-200);
+  --color-border-dark: var(--color-mirage-700);
+}
+
+@theme inline {
+  --color-mirage-950: var(--color-mirage-950);
+  --color-mirage-900: var(--color-mirage-900);
+  --color-mirage-800: var(--color-mirage-800);
+  --color-mirage-700: var(--color-mirage-700);
+  --color-mirage-300: var(--color-mirage-300);
+  --color-mirage-200: var(--color-mirage-200);
+  --color-mirage-100: var(--color-mirage-100);
+  --color-mirage-50: var(--color-mirage-50);
+  --color-seagull-400: var(--color-seagull-400);
+  --color-seagull-100: var(--color-seagull-100);
+  --color-candlelight-500: var(--color-candlelight-500);
+  --color-candlelight-50: var(--color-candlelight-50);
+  --color-trinidad-700: var(--color-trinidad-700);
+  --color-trinidad-600: var(--color-trinidad-600);
+  --color-trinidad-400: var(--color-trinidad-400);
+
+  --color-bg-dark: var(--color-bg-dark);
+  --color-bg-dark-raised: var(--color-bg-dark-raised);
+  --color-bg-light: var(--color-bg-light);
+  --color-bg-light-muted: var(--color-bg-light-muted);
+  --color-bg-card: var(--color-bg-card);
+  --color-bg-accent-soft: var(--color-bg-accent-soft);
+  --color-text-on-light: var(--color-text-on-light);
+  --color-text-on-light-muted: var(--color-text-on-light-muted);
+  --color-text-on-dark: var(--color-text-on-dark);
+  --color-text-on-dark-muted: var(--color-text-on-dark-muted);
+  --color-text-accent-on-dark: var(--color-text-accent-on-dark);
+  --color-text-accent-on-light: var(--color-text-accent-on-light);
+  --color-action-primary: var(--color-action-primary);
+  --color-action-primary-text: var(--color-action-primary-text);
+  --color-accent-sky: var(--color-accent-sky);
+  --color-accent-warm: var(--color-accent-warm);
+  --color-accent-sun: var(--color-accent-sun);
+  --color-border-light: var(--color-border-light);
+  --color-border-dark: var(--color-border-dark);
+
+  /*
+   * System font stack — see the comment in app/layout.tsx for why this
+   * isn't next/font/google's Hanken Grotesk. Visually close (both are
+   * grotesque/humanist sans faces); swap this for --font-hanken-grotesk
+   * if next/font/google is re-enabled.
+   */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background: var(--color-bg-light);
+  color: var(--color-text-on-light);
+}
