@@ -1,4 +1,5 @@
-import { test } from "node:test";
+// @vitest-environment node
+import { test } from "vitest";
 import assert from "node:assert/strict";
 import {
   formatCurrency,
@@ -6,7 +7,7 @@ import {
   formatPercent,
   formatYears,
   formatPanelCount,
-} from "../../lib/format.ts";
+} from "@/lib/format";
 
 test("formatCurrency rounds to whole dollars with a $ sign and thousands separator", () => {
   assert.equal(formatCurrency(14726.25), "$14,726");

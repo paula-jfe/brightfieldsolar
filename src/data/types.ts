@@ -13,6 +13,17 @@ export interface HouseholdProfile {
   label: string;
   /** Typical monthly bill in dollars for this profile. Used to prefill the simulator. */
   typicalBill: number;
+  /**
+   * Optional shorter label for narrow (mobile) layouts, where the full label
+   * wraps to three lines inside a half-width card. Falls back to `label`.
+   */
+  shortLabel?: string;
+  /**
+   * Optional illustrative icon shown on desktop cards: "apartment", "house",
+   * "houseAC" or "pool". Typed as string because JSON imports widen literals;
+   * unknown values simply render no icon.
+   */
+  icon?: string;
 }
 
 export interface Crew {
@@ -22,6 +33,8 @@ export interface Crew {
   /** Year the crew started, e.g. 2019 */
   since: number;
   blurb: string;
+  /** Optional photo path under /public. A neutral placeholder is shown when missing. */
+  photo?: string;
 }
 
 export interface Testimonial {

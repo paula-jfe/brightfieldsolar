@@ -14,6 +14,7 @@ import {
 } from "@/lib/calculator";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import { Container } from "@/components/ui/Container";
+import { LinkButton } from "@/components/ui/Button";
 import { ProfileSelector } from "./ProfileSelector";
 import { RangeSlider } from "./RangeSlider";
 import { SimulatorResult } from "./SimulatorResult";
@@ -61,24 +62,38 @@ export function Simulator({ city }: { city: CityData }) {
   }
 
   function handleCoverageChange(value: number) {
+    // Coverage isn't part of a profile, so changing it keeps the selection.
     setCoverage(value);
-    setSelectedProfileIndex(null);
   }
 
   return (
-    <section id="estimate" className="bg-bg-light-muted py-14 md:py-24">
+    <section id="estimate" className="bg-bg-light py-14 md:py-24">
       <Container>
-        <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
-          <div className="flex flex-col gap-6 rounded-[2rem] bg-bg-card p-5 py-6 ring-1 ring-border-light md:gap-7 md:p-10 md:py-10">
-            <h2 className="text-2xl font-extrabold">Which home is closest to yours?</h2>
+        <div className="flex flex-col gap-2">
+          <h2 className="font-display text-[28px] font-extrabold leading-[1.15] md:text-[40px]">
+            Estimate your savings
+          </h2>
+          <p className="text-lg leading-7 text-text-on-light-muted">
+            Move the sliders or pick the home closest to yours. The estimate updates instantly
+            <span className="hidden md:inline">, using {city.city}&apos;s own utility rates and sun hours</span>.
+          </p>
+        </div>
+
+        {/* Mobile: one white card holding inputs + result, with the dark
+            estimate running edge to edge (Figma mobile "Simulator card").
+            Desktop: two columns — inputs card on the left, result column on
+            the right (Figma desktop "Columns"). */}
+        <div className="mt-8 flex flex-col gap-6 overflow-hidden rounded-[var(--radius-card)] bg-bg-card py-6 ring-1 ring-border-light md:mt-12 md:grid md:grid-cols-[minmax(0,681fr)_minmax(0,599fr)] md:items-start md:gap-8 md:overflow-visible md:rounded-none md:bg-transparent md:py-0 md:ring-0">
+          <div className="flex flex-col gap-5 px-6 md:gap-7 md:rounded-[var(--radius-card)] md:bg-bg-card md:p-10 md:ring-1 md:ring-border-light">
+            <h3 className="font-display text-lg font-extrabold md:text-2xl">Which home is closest to yours?</h3>
             <ProfileSelector
               profiles={city.householdProfiles}
               selectedIndex={selectedProfileIndex}
               onSelect={handleSelectProfile}
             />
             <RangeSlider
-              label="Monthly electric bill"
-              valueLabel={`${formatCurrency(monthlyBill)}/mo`}
+              label="Monthly bill"
+              valueLabel={formatCurrency(monthlyBill)}
               minLabel={`${formatCurrency(BILL_MIN)}/mo`}
               maxLabel={`${formatCurrency(BILL_MAX)}/mo`}
               min={BILL_MIN}
@@ -88,7 +103,7 @@ export function Simulator({ city }: { city: CityData }) {
               onChange={handleBillChange}
             />
             <RangeSlider
-              label="How much do you want to cover?"
+              label="How much of your usage do you want to cover?"
               valueLabel={formatPercent(coverage)}
               minLabel={formatPercent(COVERAGE_MIN)}
               maxLabel={formatPercent(COVERAGE_MAX)}
@@ -100,12 +115,15 @@ export function Simulator({ city }: { city: CityData }) {
             />
           </div>
 
-          <SimulatorResult
-            result={result}
-            monthlyBill={monthlyBill}
-            minPanels={city.minPanels}
-            stateIncentiveNote={city.stateIncentiveNote}
-          />
+          <div className="flex flex-col gap-6 md:gap-5">
+            <SimulatorResult result={result} monthlyBill={monthlyBill} minPanels={city.minPanels} />
+            <div className="flex flex-col gap-3 px-6 md:gap-5 md:px-0">
+              <p className="text-[15px] leading-[1.5] text-text-on-light-muted">{city.stateIncentiveNote}</p>
+              <LinkButton href="#contact" variant="primary" className="w-full">
+                Talk to a solar expert
+              </LinkButton>
+            </div>
+          </div>
         </div>
       </Container>
     </section>

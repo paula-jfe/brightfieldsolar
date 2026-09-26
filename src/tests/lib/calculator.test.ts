@@ -1,6 +1,7 @@
-import { test } from "node:test";
+// @vitest-environment node
+import { test } from "vitest";
 import assert from "node:assert/strict";
-import { calculateSolarEstimate, DEFAULT_COVERAGE, type SimulatorInputs } from "../../lib/calculator.ts";
+import { calculateSolarEstimate, DEFAULT_COVERAGE, type SimulatorInputs } from "@/lib/calculator";
 import type { CityData } from "@/data/types";
 
 // Phoenix constants, copied from data/cities/phoenix-az.json. Duplicated

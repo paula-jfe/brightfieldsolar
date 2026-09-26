@@ -1,6 +1,7 @@
-import { test } from "node:test";
+// @vitest-environment node
+import { test } from "vitest";
 import assert from "node:assert/strict";
-import { getCityBySlug, getAllCitySlugs, DEFAULT_CITY_SLUG } from "../../data/cities.ts";
+import { getCityBySlug, getAllCitySlugs, DEFAULT_CITY_SLUG } from "@/data/cities";
 
 test("getCityBySlug returns the matching city", () => {
   const city = getCityBySlug("phoenix-az");

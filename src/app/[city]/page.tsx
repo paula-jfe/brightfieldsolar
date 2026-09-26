@@ -36,7 +36,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const title = `Solar Panels in ${city.city}, ${city.state} | Brightfield Solar`;
   const description = `See your solar savings estimate for ${city.city}, ${city.stateFull} in real time. ${city.installsCompleted.toLocaleString("en-US")} installs completed, ${city.avgRating.toFixed(1)}/5 average rating.`;
 
-  return { title, description };
+  // Open Graph: the brief notes visitors send this link to whoever decides
+  // with them, so the chat-app preview should look trustworthy.
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website", siteName: "Brightfield Solar", locale: "en_US" },
+    twitter: { card: "summary", title, description },
+  };
 }
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
@@ -46,16 +53,24 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
 
   return (
     <>
+      {/* First tab stop: jumps keyboard users past the header (WCAG 2.4.1).
+          Hidden until focused. */}
+      <a
+        href="#main"
+        className="sr-only z-50 rounded-full bg-action-primary px-5 py-3 font-semibold text-action-primary-text focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+      >
+        Skip to content
+      </a>
       <Header city={city} />
-      <main>
+      <main id="main" tabIndex={-1} className="outline-none">
         <Hero city={city} />
         <Simulator city={city} />
-        <HowItWorks />
+        <HowItWorks city={city} />
         <SocialProofSection city={city} />
         <Faq city={city} />
         <FinalCta city={city} />
       </main>
-      <Footer />
+      <Footer city={city} />
     </>
   );
 }

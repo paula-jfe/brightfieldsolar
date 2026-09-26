@@ -1,41 +1,50 @@
+import type { CityData } from "@/data/types";
 import { Container } from "@/components/ui/Container";
 
-const steps = [
-  {
-    title: "Get your estimate",
-    description: "See your estimated savings based on your home and electricity use.",
-  },
-  {
-    title: "Site & Solar Plan",
-    description: "Our team checks your property and designs your system.",
-  },
-  {
-    title: "Installation",
-    description: "We handle permits, installation, and getting your system connected.",
-  },
-];
+/**
+ * Three steps, per the brief. Step 2 pulls the permit time from the city
+ * data (avgPermitDays), so the full timeline reads in the same order as the
+ * FAQ answer: permit -> one-day install -> utility interconnection.
+ */
+export function HowItWorks({ city }: { city: CityData }) {
+  const steps = [
+    {
+      title: "Get your estimate",
+      description: "Use the simulator above to see your panel count, investment, and monthly savings in real time.",
+    },
+    {
+      title: "Site & solar plan",
+      description: `A local crew checks your roof and finalizes a plan sized to your usage. We file the city permit, which averages ${city.avgPermitDays} days in ${city.city}.`,
+    },
+    {
+      title: "Installation",
+      description:
+        "Most systems go up in a single day. We handle the utility interconnection, which adds a week or two.",
+    },
+  ];
 
-export function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-bg-light-muted py-14 md:py-24">
+    <section id="how-it-works" className="bg-bg-light py-14 md:py-24">
       <Container>
-        <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">How it works</h2>
-        <ol className="mt-10 grid gap-6 md:mt-12 md:grid-cols-3">
+        <h2 className="font-display text-left text-[32px] md:text-center font-extrabold leading-[1.15] tracking-tight md:text-4xl">
+          How it works
+        </h2>
+        <ol className="mt-8 grid gap-6 md:mt-12 md:grid-cols-3">
           {steps.map((step, index) => (
-            <li key={step.title} className="rounded-3xl bg-bg-card p-7 ring-1 ring-border-light">
+            <li
+              key={step.title}
+              className="flex flex-col gap-4 rounded-[var(--radius-card)] bg-bg-card p-7 ring-1 ring-border-light"
+            >
               <div className="flex items-center gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bg-dark text-sm font-bold text-text-on-dark">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bg-dark font-semibold text-text-on-dark">
                   {index + 1}
                 </span>
-                <h3 className="text-2xl font-extrabold">{step.title}</h3>
+                <h3 className="font-display text-2xl font-extrabold leading-[30px]">{step.title}</h3>
               </div>
-              <p className="mt-4 text-text-on-light-muted">{step.description}</p>
+              <p className="leading-6 text-text-on-light-muted">{step.description}</p>
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-center text-xl font-extrabold text-text-accent-on-light md:text-2xl">
-          Going solar is simple!
-        </p>
       </Container>
     </section>
   );

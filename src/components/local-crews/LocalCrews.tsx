@@ -1,44 +1,47 @@
+import Image from "next/image";
 import type { CityData } from "@/data/types";
-import { CarouselArrow } from "./CarouselArrow";
+import { publicAssetExists } from "@/lib/public-asset";
+import { Carousel } from "./Carousel";
 
-/**
- * Mobile-first: below md this is a native horizontal-scroll row
- * (snap-x, each card a fixed 320px, matching the Figma mobile frame's own
- * "overflow-x-auto" carousel with no arrow controls — a swipe gesture,
- * not JS). At md it becomes a static 3-column grid with decorative
- * prev/next arrows either side, matching the Figma desktop frame.
- */
+/** Figma "Crew Card". Photo comes from the data file; placeholder if missing. */
 export function LocalCrews({ city }: { city: CityData }) {
   return (
-    <div>
-      <div className="text-center">
-        <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">Local Crews</h2>
-        <p className="mt-3 text-lg text-text-on-dark-muted">
-          Showing {city.crews.length} of our {city.crewsAvailable} {city.city} crews.
-        </p>
-      </div>
-
-      <div className="mt-8 flex items-center gap-4 md:mt-10">
-        <CarouselArrow direction="prev" />
-        <ul className="flex flex-1 snap-x snap-mandatory gap-6 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible md:pb-0">
-          {city.crews.map((crew) => (
-            <li
-              key={crew.name}
-              className="w-[320px] shrink-0 snap-start overflow-hidden rounded-3xl bg-bg-card ring-1 ring-border-light md:w-auto"
-            >
-              <div aria-hidden="true" className="h-[200px] bg-bg-light-muted" />
-              <div className="space-y-2 px-6 py-5">
-                <h3 className="text-2xl font-extrabold text-text-on-light">{crew.name}</h3>
-                <p className="text-sm font-bold text-text-accent-on-light">
-                  {crew.installs} installs · ★ {crew.rating.toFixed(1)} · since {crew.since}
-                </p>
-                <p className="text-text-on-light-muted">{crew.blurb}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <CarouselArrow direction="next" />
-      </div>
-    </div>
+    <Carousel
+      title="Local crews"
+      subtitle={`Meet ${city.crews.length} of our ${city.crewsAvailable} crews in ${city.city}.`}
+      label="Local crews"
+    >
+      {city.crews.map((crew) => (
+        <article
+          key={crew.name}
+          className="flex h-full flex-col gap-6 rounded-[var(--radius-card)] bg-bg-dark-raised p-6"
+        >
+          {publicAssetExists(crew.photo) ? (
+            // Photos live in /public because their paths come from the city
+            // data file. next/image still resizes them (the originals are
+            // ~1 MB at 1776px; a card needs ~620px).
+            <Image
+              src={crew.photo}
+              alt={`${crew.name} at work on a ${city.city} roof`}
+              width={1776}
+              height={896}
+              sizes="(min-width: 768px) 400px, 320px"
+              className="h-[140px] w-full rounded-[var(--radius-inner)] object-cover"
+            />
+          ) : (
+            <div aria-hidden="true" className="h-[140px] w-full rounded-[var(--radius-inner)] bg-mirage-700" />
+          )}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-xl font-bold leading-[1.3] text-text-on-dark">{crew.name}</h3>
+            <p className="leading-[1.4] text-text-accent-on-dark">
+              <span aria-hidden="true">★ </span>
+              <span className="sr-only">Rated </span>
+              {crew.rating.toFixed(1)} · {crew.installs.toLocaleString("en-US")} installs · since {crew.since}
+            </p>
+            <p className="leading-[1.5] text-text-on-dark-muted">{crew.blurb}</p>
+          </div>
+        </article>
+      ))}
+    </Carousel>
   );
 }

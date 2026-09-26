@@ -10,7 +10,7 @@ import { Testimonials } from "@/components/testimonials/Testimonials";
  */
 export function SocialProofSection({ city }: { city: CityData }) {
   return (
-    <section id="local-crews" className="bg-bg-dark py-14 text-text-on-dark md:py-24">
+    <section id="local-crews" className="surface-dark bg-bg-dark py-14 text-text-on-dark md:py-24">
       <Container>
         <LocalCrews city={city} />
         <Testimonials city={city} />

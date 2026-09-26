@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 
-// The Figma design specifies Hanken Grotesk. next/font/google is the
-// idiomatic way to load it (self-hosted at build time, no layout shift,
-// no runtime request to Google) — but fetching it requires build-time
-// network access to fonts.googleapis.com, which this sandbox's egress
-// policy blocks. Using the system font stack here instead means zero
-// external dependency at build time, in any environment. To switch to
-// Hanken Grotesk on a host that allows it, swap this back to
-// `import { Hanken_Grotesk } from "next/font/google"` and reference its
-// `variable` on <html>; --font-sans in globals.css already expects that
-// variable name.
+// Fonts from the Figma file: Hanken Grotesk for display (headings, big
+// numbers) and Inter for body/UI text. Self-hosted variable fonts (from
+// @fontsource-variable, latin subset) via next/font/local, so the build
+// never needs network access to Google Fonts and there is no layout shift.
+const hankenGrotesk = localFont({
+  src: "./fonts/hanken-grotesk-latin-wght.woff2",
+  weight: "100 900",
+  variable: "--font-hanken-grotesk",
+  display: "swap",
+});
+
+const inter = localFont({
+  src: "./fonts/inter-latin-wght.woff2",
+  weight: "100 900",
+  variable: "--font-inter",
+  display: "swap",
+});
 
 // Fallback metadata for the root layout. The actual per-city title and
 // description are set by app/[city]/page.tsx via generateMetadata, since
@@ -22,8 +30,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="antialiased">
-      <body className="min-h-screen bg-bg-light text-text-on-light font-sans">{children}</body>
+    <html lang="en" className={`${hankenGrotesk.variable} ${inter.variable} antialiased scroll-smooth`}>
+      <body className="min-h-screen bg-bg-light font-sans text-text-on-light">{children}</body>
     </html>
   );
 }

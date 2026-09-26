@@ -15,6 +15,7 @@
   --color-mirage-200: #d0dae7;
   --color-mirage-100: #eaeef4;
   --color-mirage-50: #fcfdff;
+  --color-seagull-500: #2599c3;
   --color-seagull-400: #4ebbe2;
   --color-seagull-100: #e3f2fb;
   --color-candlelight-500: #fcdb04;
@@ -39,11 +40,33 @@
   --color-text-accent-on-light: var(--color-trinidad-700);
   --color-action-primary: var(--color-candlelight-500);
   --color-action-primary-text: var(--color-mirage-950);
-  --color-accent-sky: var(--color-seagull-400);
+  /* Selected state + focus ring on light surfaces: 3.3:1 on white (WCAG 1.4.11). */
+  --color-accent-sky: var(--color-seagull-500);
   --color-accent-warm: var(--color-trinidad-600);
   --color-accent-sun: var(--color-candlelight-500);
   --color-border-light: var(--color-mirage-200);
+  /* Form controls (inputs, checkbox): 3.6:1 on white (WCAG 1.4.11). Decorative
+     card borders stay on border-light. Figma: border/control. */
+  --color-border-control: #76889f;
   --color-border-dark: var(--color-mirage-700);
+
+  /*
+   * Radius tokens (Figma "Radius" collection), responsive:
+   * --radius-card: sections' big cards/containers — 16px on mobile and
+   *   tablet, 24px on desktop (>= 1024px).
+   * --radius-inner: smaller elements inside them (profile options, photos,
+   *   inputs, stat cards) — 16px everywhere.
+   * Kept out of @theme on purpose so they don't override Tailwind's own
+   * rounded-md / rounded-lg scale.
+   */
+  --radius-card: 16px;
+  --radius-inner: 16px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --radius-card: 24px;
+  }
 }
 
 @theme inline {
@@ -55,6 +78,7 @@
   --color-mirage-200: var(--color-mirage-200);
   --color-mirage-100: var(--color-mirage-100);
   --color-mirage-50: var(--color-mirage-50);
+  --color-seagull-500: var(--color-seagull-500);
   --color-seagull-400: var(--color-seagull-400);
   --color-seagull-100: var(--color-seagull-100);
   --color-candlelight-500: var(--color-candlelight-500);
@@ -81,19 +105,185 @@
   --color-accent-warm: var(--color-accent-warm);
   --color-accent-sun: var(--color-accent-sun);
   --color-border-light: var(--color-border-light);
+  --color-border-control: var(--color-border-control);
   --color-border-dark: var(--color-border-dark);
 
-  /*
-   * System font stack — see the comment in app/layout.tsx for why this
-   * isn't next/font/google's Hanken Grotesk. Visually close (both are
-   * grotesque/humanist sans faces); swap this for --font-hanken-grotesk
-   * if next/font/google is re-enabled.
-   */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Inter for body/UI, Hanken Grotesk for display — see app/layout.tsx. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: var(--font-hanken-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* One motion language for every interaction (hover, select, open/close). */
+  --default-transition-duration: 250ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
 }
 
 body {
   background: var(--color-bg-light);
   color: var(--color-text-on-light);
+}
+
+/* Keep whatever the page scrolls to below the sticky header: anchor
+   targets (#estimate, #faq…) and also keyboard focus, so a focused field is
+   never hidden behind the header when tabbing backwards (WCAG 2.4.11). */
+html {
+  scroll-padding-top: 96px;
+}
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 102px;
+  }
+}
+
+/* Default keyboard focus ring for anything without its own focus style.
+   Sky blue on light surfaces; yellow inside `.surface-dark` (header, hero,
+   social proof, footer), where a dark ring would disappear (WCAG 2.4.7). */
+@layer base {
+  :root {
+    --focus-ring: var(--color-accent-sky);
+  }
+  .surface-dark {
+    --focus-ring: var(--color-accent-sun);
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------- Range slider (Figma "Bill Slider" / "Coverage Slider") ---------- */
+.range {
+  --fill: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  /* 44px tall hit area for touch, while the visible track stays 10px. */
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+.range:focus-visible {
+  outline: none;
+}
+.range::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid #b0b5ba;
+  background: linear-gradient(
+    to right,
+    var(--color-bg-dark) 0 var(--fill),
+    #efefef var(--fill) 100%
+  );
+}
+.range::-moz-range-track {
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid #b0b5ba;
+  background: #efefef;
+}
+.range::-moz-range-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-bg-dark);
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -8px;
+  border-radius: 999px;
+  background: var(--color-bg-dark);
+  border: 0;
+  transition: transform 0.15s ease;
+}
+.range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--color-bg-dark);
+  border: 0;
+}
+.range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--color-bg-accent-soft), 0 0 0 6px var(--color-accent-sky);
+}
+.range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px var(--color-bg-accent-soft), 0 0 0 6px var(--color-accent-sky);
+}
+
+/* ---------- Hero animation (Figma "HeroImg" + "Floating Stat") ---------- */
+/* Night -> day, once, then stays on day. */
+@keyframes hero-fade-out {
+  to { opacity: 0; }
+}
+@keyframes hero-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hero-sun-rise {
+  from { transform: translateY(260%); }
+  to { transform: translateY(0); }
+}
+@keyframes hero-moon-set {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(420%); opacity: 0; }
+}
+/* Slow loop (5–7s, 12px) so it reads as ambient rather than
+   attention-grabbing. Infinite by design: see README for the WCAG 2.2.2
+   trade-off. Turned off entirely under prefers-reduced-motion. */
+@keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+.hero-night { animation: hero-fade-out 2.6s ease-in-out 0.6s forwards; }
+.hero-day { opacity: 0; animation: hero-fade-in 2.6s ease-in-out 0.6s forwards; }
+.hero-sun { transform: translateY(260%); animation: hero-sun-rise 2.6s ease-in-out 0.6s forwards; }
+.hero-moon { animation: hero-moon-set 1.8s ease-in 0.6s forwards; }
+.float-slow { animation: float 7s ease-in-out infinite alternate; }
+.float-medium { animation: float 6s ease-in-out infinite alternate; }
+.float-fast { animation: float 5s ease-in-out infinite alternate; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-night { animation: none; opacity: 0; }
+  .hero-day { animation: none; opacity: 1; }
+  .hero-sun { animation: none; transform: none; }
+  .hero-moon { animation: none; opacity: 0; }
+  .float-slow, .float-medium, .float-fast { animation: none; }
+}
+
+/* Hide native scrollbars on the swipe carousels (still scrollable). */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Respect users who ask for less motion: interactions become instant. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Sun loader (Figma "Loader") ---------- */
+@keyframes sun-ray {
+  0% { opacity: 1; }
+  12.5% { opacity: 0.7; }
+  25% { opacity: 0.45; }
+  37.5%, 100% { opacity: 0.2; }
+}
+.sun-loader-ray {
+  opacity: 0.2;
+  animation: sun-ray 0.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sun-loader-ray { animation: none; opacity: 0.6; }
 }

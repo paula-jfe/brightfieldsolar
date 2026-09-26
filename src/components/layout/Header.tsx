@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import type { CityData } from "@/data/types";
 import { LinkButton } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -11,58 +14,116 @@ const navLinks = [
 ];
 
 /**
- * Server Component. The mobile menu open/close state is handled with a
- * plain checkbox + CSS ("peer-checked") instead of React state, so this
- * component needs no "use client" — no JS ships just to toggle a menu.
- *
- * Mobile-first: below md this is just Logo + hamburger icon, matching the
- * Figma mobile frame exactly (no nav links visible until the menu opens).
- * At md, the full nav row + CTA button show inline instead, and the
- * hamburger disappears — matching the Figma desktop frame.
+ * Sticky header with a 95% dark background + blur. Desktop: logo, nav links
+ * (hover = white text + yellow underline, the Figma "Nav Link" hover state)
+ * and the primary CTA. Mobile: logo + menu button; the open menu drops down
+ * *over* the page (absolutely positioned under the header, so it never
+ * pushes content down) with the same translucent background, and the header
+ * row itself doesn't change colour (Figma "Menu=Open"). Client component only
+ * for the open state, closing on link tap, Escape, or resizing to desktop.
  */
 export function Header({ city }: { city: CityData }) {
+  const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      // The menu becomes inert when it closes, so focus inside it would be
+      // lost; hand it back to the button that opened it.
+      if (menuRef.current?.contains(document.activeElement)) toggleRef.current?.focus();
+      setOpen(false);
+    };
+    const onResize = () => window.innerWidth >= 768 && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [open]);
+
+  const close = () => setOpen(false);
+
   return (
-    <header className="sticky top-0 z-50 bg-bg-dark/95 backdrop-blur">
-      <Container className="relative flex items-center justify-between py-8 md:py-5">
-        <Link href={`/${city.slug}`}>
+    <header className="surface-dark sticky top-0 z-40 bg-bg-dark/95 backdrop-blur">
+      <Container className="flex h-24 items-center justify-between md:h-[102px]">
+        <Link href={`/${city.slug}`} aria-label="Brightfield Solar home" onClick={close}>
           <Logo tone="on-dark" />
         </Link>
 
-        <nav className="hidden items-center gap-8 text-base md:flex">
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="text-text-on-dark-muted hover:text-text-on-dark">
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <LinkButton href="#estimate" variant="primary" className="hidden md:inline-flex">
-          Get my estimate
-        </LinkButton>
-
-        <input id="mobile-menu-toggle" type="checkbox" className="peer hidden" aria-hidden="true" />
-        <label
-          htmlFor="mobile-menu-toggle"
-          className="flex cursor-pointer flex-col items-start gap-[5px] py-2.5 md:hidden"
-          aria-label="Toggle menu"
-        >
-          <span className="sr-only">Menu</span>
-          <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-text-on-dark" />
-          <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-text-on-dark" />
-          <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-text-on-dark" />
-        </label>
-
-        <div className="pointer-events-none absolute inset-x-0 top-full hidden max-h-0 flex-col gap-1 overflow-hidden border-t border-white/10 bg-bg-dark px-5 py-0 opacity-0 transition-all peer-checked:pointer-events-auto peer-checked:flex peer-checked:max-h-96 peer-checked:py-4 peer-checked:opacity-100 md:hidden">
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="py-2 text-text-on-dark-muted hover:text-text-on-dark">
-              {link.label}
-            </a>
-          ))}
-          <LinkButton href="#estimate" variant="primary" className="mt-2 w-full">
+        <div className="hidden items-center gap-10 md:flex">
+          <nav aria-label="Main" className="flex items-center gap-8">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="group relative py-1 text-text-on-dark-muted transition-colors hover:text-text-on-dark"
+              >
+                {link.label}
+                <span className="absolute inset-x-0 -bottom-0.5 h-0.5 origin-left scale-x-0 rounded-full bg-accent-sun transition-transform group-hover:scale-x-100" />
+              </a>
+            ))}
+          </nav>
+          <LinkButton href="#estimate" variant="primary">
             Get my estimate
           </LinkButton>
         </div>
+
+        <button
+          ref={toggleRef}
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          className="-mr-2.5 flex h-11 w-11 items-center justify-center rounded-full text-text-on-dark active:bg-white/12 md:hidden"
+        >
+          {/* Three bars that morph into an X (top/bottom rotate, middle fades). */}
+          <span aria-hidden="true" className="relative block h-[19px] w-6">
+            <span
+              className={`absolute left-0 top-0 h-[3px] w-6 rounded-full bg-current transition-transform ${
+                open ? "translate-y-[8px] rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-[8px] h-[3px] w-6 rounded-full bg-current transition-opacity ${
+                open ? "opacity-0" : "opacity-100"
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-[16px] h-[3px] w-6 rounded-full bg-current transition-transform ${
+                open ? "-translate-y-[8px] -rotate-45" : ""
+              }`}
+            />
+          </span>
+        </button>
       </Container>
+
+      {/* Always mounted so it can animate out as well as in; `inert` keeps
+          the hidden links out of the tab order and away from screen readers. */}
+      <nav
+        ref={menuRef}
+        id="mobile-menu"
+        aria-label="Menu"
+        inert={!open}
+        className={`absolute inset-x-0 top-full origin-top border-t border-border-dark bg-bg-dark/95 shadow-[0_16px_32px_rgba(13,18,26,0.35)] backdrop-blur transition-[opacity,transform] md:hidden ${
+          open ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+        }`}
+      >
+        <Container className="pb-6 pt-2">
+          {navLinks.map((link) => (
+            <a key={link.href} href={link.href} onClick={close} className="block py-3.5 text-lg text-text-on-dark transition-colors active:text-accent-sun">
+              {link.label}
+            </a>
+          ))}
+          <LinkButton href="#estimate" variant="primary" onClick={close} className="mt-4 w-full">
+            Get my estimate
+          </LinkButton>
+        </Container>
+      </nav>
     </header>
   );
 }
