@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { DEFAULT_CITY_SLUG } from "@/data/cities";
+import { DEFAULT_CITY_SLUG } from "@/data/cities.ts";
 
 /**
  * The root URL always shows one city — currently Phoenix. Rather than

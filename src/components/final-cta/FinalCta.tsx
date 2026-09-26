@@ -7,21 +7,27 @@ import { Button } from "@/components/ui/Button";
  * scheduling, no auth. This form has no `action`/`onSubmit`; it's a static
  * mockup of the lead-capture step, matching the design without pretending
  * to have a server behind it.
+ *
+ * Mobile-first: the Figma mobile frame stacks everything in one column
+ * (copy + photo, then the form below). At md it becomes two columns
+ * side by side with a vertical divider, matching the Figma desktop frame.
  */
 export function FinalCta({ city }: { city: CityData }) {
   return (
-    <section id="contact" className="bg-bg-light-muted py-16 md:py-24">
+    <section id="contact" className="bg-bg-light-muted py-14 md:py-24">
       <Container>
-        <h2 className="text-center text-5xl font-extrabold tracking-tight">Ready to take the next step?</h2>
+        <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+          Ready to take the next step?
+        </h2>
 
-        <div className="mt-12 grid gap-10 md:grid-cols-2">
+        <div className="mt-10 flex flex-col gap-8 md:mt-12 md:grid md:grid-cols-2 md:gap-10">
           <div className="flex flex-col gap-4">
             <p className="text-lg text-text-on-light-muted">
               Your estimate shows your potential savings, including available federal incentives.
             </p>
             <div
               aria-hidden="true"
-              className="flex flex-1 min-h-[220px] items-center justify-center rounded-3xl bg-bg-dark-raised p-6 text-center text-sm text-text-on-dark-muted ring-1 ring-border-dark"
+              className="flex min-h-[220px] flex-1 items-center justify-center rounded-3xl bg-bg-dark-raised p-6 text-center text-sm text-text-on-dark-muted ring-1 ring-border-dark"
             >
               Photo: homeowner with Brightfield crew
             </div>

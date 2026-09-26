@@ -13,10 +13,12 @@ import { Container } from "@/components/ui/Container";
  */
 export function Faq({ city }: { city: CityData }) {
   return (
-    <section id="faq" className="bg-bg-light py-16 md:py-24">
+    <section id="faq" className="bg-bg-light py-14 md:py-24">
       <Container className="max-w-3xl">
-        <h2 className="text-center text-5xl font-extrabold tracking-tight">Questions? We&apos;ve got answers.</h2>
-        <div className="mt-10 space-y-3">
+        <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">
+          Questions? We&apos;ve got answers.
+        </h2>
+        <div className="mt-8 space-y-3 md:mt-10">
           {city.faq.map((entry) => (
             <details key={entry.q} className="group rounded-3xl bg-bg-card px-6 py-5 ring-1 ring-border-light">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold marker:content-none">

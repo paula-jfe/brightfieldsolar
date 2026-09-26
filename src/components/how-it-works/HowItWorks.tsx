@@ -17,10 +17,10 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-bg-light-muted py-16 md:py-24">
+    <section id="how-it-works" className="bg-bg-light-muted py-14 md:py-24">
       <Container>
-        <h2 className="text-center text-5xl font-extrabold tracking-tight">How it works</h2>
-        <ol className="mt-12 grid gap-6 md:grid-cols-3">
+        <h2 className="text-center text-3xl font-extrabold tracking-tight md:text-4xl">How it works</h2>
+        <ol className="mt-10 grid gap-6 md:mt-12 md:grid-cols-3">
           {steps.map((step, index) => (
             <li key={step.title} className="rounded-3xl bg-bg-card p-7 ring-1 ring-border-light">
               <div className="flex items-center gap-4">
@@ -33,7 +33,9 @@ export function HowItWorks() {
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-center text-4xl font-extrabold text-text-accent-on-light">Going solar is simple!</p>
+        <p className="mt-4 text-center text-xl font-extrabold text-text-accent-on-light md:text-2xl">
+          Going solar is simple!
+        </p>
       </Container>
     </section>
   );

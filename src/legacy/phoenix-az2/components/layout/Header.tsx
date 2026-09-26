@@ -1,34 +1,28 @@
 import Link from "next/link";
 import type { CityData } from "@/data/types";
-import { LinkButton } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { Logo } from "@/components/ui/Logo";
+import { LinkButton } from "@/legacy/phoenix-az2/components/ui/Button";
+import { Container } from "@/legacy/phoenix-az2/components/ui/Container";
 
 const navLinks = [
   { label: "How it works", href: "#how-it-works" },
   { label: "Local crews", href: "#local-crews" },
-  { label: "FAQs", href: "#faq" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 /**
  * Server Component. The mobile menu open/close state is handled with a
  * plain checkbox + CSS ("peer-checked") instead of React state, so this
  * component needs no "use client" — no JS ships just to toggle a menu.
- *
- * Mobile-first: below md this is just Logo + hamburger icon, matching the
- * Figma mobile frame exactly (no nav links visible until the menu opens).
- * At md, the full nav row + CTA button show inline instead, and the
- * hamburger disappears — matching the Figma desktop frame.
  */
 export function Header({ city }: { city: CityData }) {
   return (
-    <header className="sticky top-0 z-50 bg-bg-dark/95 backdrop-blur">
-      <Container className="relative flex items-center justify-between py-8 md:py-5">
-        <Link href={`/${city.slug}`}>
-          <Logo tone="on-dark" />
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-bg-dark text-text-on-dark">
+      <Container className="flex h-16 items-center justify-between">
+        <Link href={`/${city.slug}`} className="text-lg font-extrabold tracking-tight">
+          Brightfield<span className="text-text-accent-on-dark">.</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-base md:flex">
+        <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
           {navLinks.map((link) => (
             <a key={link.href} href={link.href} className="text-text-on-dark-muted hover:text-text-on-dark">
               {link.label}
@@ -43,16 +37,16 @@ export function Header({ city }: { city: CityData }) {
         <input id="mobile-menu-toggle" type="checkbox" className="peer hidden" aria-hidden="true" />
         <label
           htmlFor="mobile-menu-toggle"
-          className="flex cursor-pointer flex-col items-start gap-[5px] py-2.5 md:hidden"
+          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/20 md:hidden"
           aria-label="Toggle menu"
         >
           <span className="sr-only">Menu</span>
-          <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-text-on-dark" />
-          <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-text-on-dark" />
-          <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-text-on-dark" />
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M2 4.5H16M2 9H16M2 13.5H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
         </label>
 
-        <div className="pointer-events-none absolute inset-x-0 top-full hidden max-h-0 flex-col gap-1 overflow-hidden border-t border-white/10 bg-bg-dark px-5 py-0 opacity-0 transition-all peer-checked:pointer-events-auto peer-checked:flex peer-checked:max-h-96 peer-checked:py-4 peer-checked:opacity-100 md:hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-16 hidden max-h-0 flex-col gap-1 overflow-hidden border-b border-white/10 bg-bg-dark px-6 py-0 opacity-0 transition-all peer-checked:pointer-events-auto peer-checked:flex peer-checked:max-h-96 peer-checked:py-4 peer-checked:opacity-100 md:hidden">
           {navLinks.map((link) => (
             <a key={link.href} href={link.href} className="py-2 text-text-on-dark-muted hover:text-text-on-dark">
               {link.label}

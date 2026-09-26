@@ -15,7 +15,7 @@ export function SimulatorResult({
   stateIncentiveNote: string;
 }) {
   return (
-    <div className="flex h-full flex-col justify-between gap-6 rounded-[2rem] bg-bg-dark p-8 text-text-on-dark md:p-10">
+    <div className="flex h-full flex-col justify-between gap-5 rounded-[1.5rem] bg-bg-dark p-6 text-text-on-dark md:gap-6 md:rounded-[2rem] md:p-10">
       <p className="text-2xl font-extrabold">Your solar estimate</p>
 
       <SavingsBar bill={monthlyBill} monthlySavings={result.monthlySavings} />

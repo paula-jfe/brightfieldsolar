@@ -13,12 +13,10 @@ import {
   calculateSolarEstimate,
 } from "@/lib/calculator";
 import { formatCurrency, formatPercent } from "@/lib/format";
-import { Container } from "@/components/ui/Container";
+import { Container } from "@/legacy/phoenix-az2/components/ui/Container";
 import { ProfileSelector } from "./ProfileSelector";
 import { RangeSlider } from "./RangeSlider";
 import { SimulatorResult } from "./SimulatorResult";
-
-const INITIAL_BILL = 220;
 
 /**
  * The only Client Component in the page. Everything here is interactive
@@ -26,22 +24,11 @@ const INITIAL_BILL = 220;
  * the browser and recompute on every change — there's no way to do that as
  * a Server Component. City data comes in as a prop from the server-rendered
  * parent, so the client bundle doesn't need its own data-fetching logic.
- *
- * Mobile-first: single card, single column (matching the Figma mobile
- * frame's "Simulator (Live)" instance). At md it splits into a two-column
- * grid — inputs on the left, live result on the right — matching desktop.
  */
 export function Simulator({ city }: { city: CityData }) {
-  const initialProfileIndex = useMemo(
-    () => city.householdProfiles.findIndex((profile) => profile.typicalBill === INITIAL_BILL),
-    [city]
-  );
-
-  const [monthlyBill, setMonthlyBill] = useState(INITIAL_BILL);
+  const [monthlyBill, setMonthlyBill] = useState(220);
   const [coverage, setCoverage] = useState(DEFAULT_COVERAGE);
-  const [selectedProfileIndex, setSelectedProfileIndex] = useState<number | null>(
-    initialProfileIndex >= 0 ? initialProfileIndex : null
-  );
+  const [selectedProfileIndex, setSelectedProfileIndex] = useState<number | null>(null);
 
   const result = useMemo(
     () => calculateSolarEstimate(city, { monthlyBill, coverage }),
@@ -66,21 +53,24 @@ export function Simulator({ city }: { city: CityData }) {
   }
 
   return (
-    <section id="estimate" className="bg-bg-light-muted py-14 md:py-24">
+    <section id="estimate" className="bg-bg-light py-16 md:py-24">
       <Container>
-        <div className="grid gap-6 md:grid-cols-2 md:items-stretch">
-          <div className="flex flex-col gap-6 rounded-[2rem] bg-bg-card p-5 py-6 ring-1 ring-border-light md:gap-7 md:p-10 md:py-10">
-            <h2 className="text-2xl font-extrabold">Which home is closest to yours?</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight">Your solar estimate</h2>
+        <p className="mt-2 max-w-2xl text-text-on-light-muted">
+          Move the sliders or pick the home closest to yours — the estimate updates instantly, using {city.city}
+          &apos;s own utility rates and sun hours.
+        </p>
+
+        <div className="mt-10 grid gap-6 rounded-2xl bg-bg-card p-6 shadow-sm ring-1 ring-border-light md:grid-cols-2 md:p-8">
+          <div className="space-y-8">
             <ProfileSelector
               profiles={city.householdProfiles}
               selectedIndex={selectedProfileIndex}
               onSelect={handleSelectProfile}
             />
             <RangeSlider
-              label="Monthly electric bill"
-              valueLabel={`${formatCurrency(monthlyBill)}/mo`}
-              minLabel={`${formatCurrency(BILL_MIN)}/mo`}
-              maxLabel={`${formatCurrency(BILL_MAX)}/mo`}
+              label="Monthly bill"
+              valueLabel={formatCurrency(monthlyBill)}
               min={BILL_MIN}
               max={BILL_MAX}
               step={BILL_STEP}
@@ -88,10 +78,8 @@ export function Simulator({ city }: { city: CityData }) {
               onChange={handleBillChange}
             />
             <RangeSlider
-              label="How much do you want to cover?"
+              label="How much of your usage do you want to cover?"
               valueLabel={formatPercent(coverage)}
-              minLabel={formatPercent(COVERAGE_MIN)}
-              maxLabel={formatPercent(COVERAGE_MAX)}
               min={COVERAGE_MIN}
               max={COVERAGE_MAX}
               step={COVERAGE_STEP}
@@ -100,13 +88,10 @@ export function Simulator({ city }: { city: CityData }) {
             />
           </div>
 
-          <SimulatorResult
-            result={result}
-            monthlyBill={monthlyBill}
-            minPanels={city.minPanels}
-            stateIncentiveNote={city.stateIncentiveNote}
-          />
+          <SimulatorResult result={result} minPanels={city.minPanels} />
         </div>
+
+        <p className="mt-4 text-xs text-text-on-light-muted">{city.stateIncentiveNote}</p>
       </Container>
     </section>
   );
