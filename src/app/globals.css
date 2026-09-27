@@ -1,0 +1,257 @@
+/* Design tokens mirrored from the Figma variables, plus global styles, slider styles and animations. */
+@import "tailwindcss";
+
+:root {
+  --color-mirage-950: #181f2b;
+  --color-mirage-900: #2c3a4e;
+  --color-mirage-800: #30425c;
+  --color-mirage-700: #364d6e;
+  --color-mirage-300: #a6bad3;
+  --color-mirage-200: #d0dae7;
+  --color-mirage-100: #eaeef4;
+  --color-mirage-50: #fcfdff;
+  --color-seagull-500: #2599c3;
+  --color-seagull-400: #4ebbe2;
+  --color-seagull-100: #e3f2fb;
+  --color-candlelight-500: #fcdb04;
+  --color-candlelight-50: #ffffe7;
+  --color-trinidad-700: #ba4214;
+  --color-trinidad-600: #de5715;
+  --color-trinidad-400: #f39044;
+  --color-white: #ffffff;
+
+  --color-bg-dark: var(--color-mirage-950);
+  --color-bg-dark-raised: var(--color-mirage-900);
+  --color-bg-light: var(--color-mirage-50);
+  --color-bg-light-muted: var(--color-mirage-100);
+  --color-bg-card: var(--color-white);
+  --color-bg-accent-soft: var(--color-seagull-100);
+  --color-text-on-light: var(--color-mirage-950);
+  --color-text-on-light-muted: var(--color-mirage-700);
+  --color-text-on-dark: var(--color-mirage-50);
+  --color-text-on-dark-muted: var(--color-mirage-200);
+  --color-text-accent-on-dark: var(--color-candlelight-500);
+  --color-text-accent-on-light: var(--color-trinidad-700);
+  --color-action-primary: var(--color-candlelight-500);
+  --color-action-primary-text: var(--color-mirage-950);
+  --color-accent-sky: var(--color-seagull-500);
+  --color-accent-warm: var(--color-trinidad-600);
+  --color-accent-sun: var(--color-candlelight-500);
+  --color-border-light: var(--color-mirage-200);
+  --color-border-control: #76889f;
+  --color-border-dark: var(--color-mirage-700);
+
+  --radius-card: 16px;
+  --radius-inner: 16px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --radius-card: 24px;
+  }
+}
+
+@theme inline {
+  --color-mirage-950: var(--color-mirage-950);
+  --color-mirage-900: var(--color-mirage-900);
+  --color-mirage-800: var(--color-mirage-800);
+  --color-mirage-700: var(--color-mirage-700);
+  --color-mirage-300: var(--color-mirage-300);
+  --color-mirage-200: var(--color-mirage-200);
+  --color-mirage-100: var(--color-mirage-100);
+  --color-mirage-50: var(--color-mirage-50);
+  --color-seagull-500: var(--color-seagull-500);
+  --color-seagull-400: var(--color-seagull-400);
+  --color-seagull-100: var(--color-seagull-100);
+  --color-candlelight-500: var(--color-candlelight-500);
+  --color-candlelight-50: var(--color-candlelight-50);
+  --color-trinidad-700: var(--color-trinidad-700);
+  --color-trinidad-600: var(--color-trinidad-600);
+  --color-trinidad-400: var(--color-trinidad-400);
+
+  --color-bg-dark: var(--color-bg-dark);
+  --color-bg-dark-raised: var(--color-bg-dark-raised);
+  --color-bg-light: var(--color-bg-light);
+  --color-bg-light-muted: var(--color-bg-light-muted);
+  --color-bg-card: var(--color-bg-card);
+  --color-bg-accent-soft: var(--color-bg-accent-soft);
+  --color-text-on-light: var(--color-text-on-light);
+  --color-text-on-light-muted: var(--color-text-on-light-muted);
+  --color-text-on-dark: var(--color-text-on-dark);
+  --color-text-on-dark-muted: var(--color-text-on-dark-muted);
+  --color-text-accent-on-dark: var(--color-text-accent-on-dark);
+  --color-text-accent-on-light: var(--color-text-accent-on-light);
+  --color-action-primary: var(--color-action-primary);
+  --color-action-primary-text: var(--color-action-primary-text);
+  --color-accent-sky: var(--color-accent-sky);
+  --color-accent-warm: var(--color-accent-warm);
+  --color-accent-sun: var(--color-accent-sun);
+  --color-border-light: var(--color-border-light);
+  --color-border-control: var(--color-border-control);
+  --color-border-dark: var(--color-border-dark);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: var(--font-hanken-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --default-transition-duration: 250ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+body {
+  background: var(--color-bg-light);
+  color: var(--color-text-on-light);
+}
+
+html {
+  scroll-padding-top: 96px;
+}
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-top: 102px;
+  }
+}
+@media (max-height: 500px) {
+  html {
+    scroll-padding-top: 0;
+  }
+}
+
+@layer base {
+  :root {
+    --focus-ring: var(--color-accent-sky);
+  }
+  .surface-dark {
+    --focus-ring: var(--color-accent-sun);
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.range {
+  --fill: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+.range:focus-visible {
+  outline: none;
+}
+.range::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid #b0b5ba;
+  background: linear-gradient(
+    to right,
+    var(--color-bg-dark) 0 var(--fill),
+    #efefef var(--fill) 100%
+  );
+}
+.range::-moz-range-track {
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid #b0b5ba;
+  background: #efefef;
+}
+.range::-moz-range-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-bg-dark);
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -8px;
+  border-radius: 999px;
+  background: var(--color-bg-dark);
+  border: 0;
+  transition: transform 0.15s ease;
+}
+.range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--color-bg-dark);
+  border: 0;
+}
+.range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--color-bg-accent-soft), 0 0 0 6px var(--color-accent-sky);
+}
+.range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px var(--color-bg-accent-soft), 0 0 0 6px var(--color-accent-sky);
+}
+
+@keyframes hero-fade-out {
+  to { opacity: 0; }
+}
+@keyframes hero-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hero-sun-rise {
+  from { transform: translateY(260%); }
+  to { transform: translateY(0); }
+}
+@keyframes hero-moon-set {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(420%); opacity: 0; }
+}
+@keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+.hero-night { animation: hero-fade-out 2.6s ease-in-out 0.6s forwards; }
+.hero-day { opacity: 0; animation: hero-fade-in 2.6s ease-in-out 0.6s forwards; }
+.hero-sun { transform: translateY(260%); animation: hero-sun-rise 2.6s ease-in-out 0.6s forwards; }
+.hero-moon { animation: hero-moon-set 1.8s ease-in 0.6s forwards; }
+.float-slow { animation: float 7s ease-in-out infinite alternate; }
+.float-medium { animation: float 6s ease-in-out infinite alternate; }
+.float-fast { animation: float 5s ease-in-out infinite alternate; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-night { animation: none; opacity: 0; }
+  .hero-day { animation: none; opacity: 1; }
+  .hero-sun { animation: none; transform: none; }
+  .hero-moon { animation: none; opacity: 0; }
+  .float-slow, .float-medium, .float-fast { animation: none; }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes sun-ray {
+  0% { opacity: 1; }
+  12.5% { opacity: 0.7; }
+  25% { opacity: 0.45; }
+  37.5%, 100% { opacity: 0.2; }
+}
+.sun-loader-ray {
+  opacity: 0.2;
+  animation: sun-ray 0.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sun-loader-ray { animation: none; opacity: 0.6; }
+}
