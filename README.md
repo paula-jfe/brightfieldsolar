@@ -24,10 +24,11 @@ Brightfield Solar is a fictional company created for this exercise. Nothing on t
 5. [Other technical decisions](#other-technical-decisions)
 6. [Assumptions](#assumptions)
 7. [Tests and what they protect](#tests-and-what-they-protect)
-8. [Accessibility](#accessibility)
-9. [Security](#security)
-10. [How AI was used and verified](#how-ai-was-used-and-verified)
-11. [What is pending](#what-is-pending)
+8. [CI and deployment](#ci-and-deployment)
+9. [Accessibility](#accessibility)
+10. [Security](#security)
+11. [How AI was used and verified](#how-ai-was-used-and-verified)
+12. [What is pending](#what-is-pending)
 
 ---
 
@@ -328,6 +329,15 @@ The brief does not require tests. These exist because the simulator's rules are 
 Async Server Components (the page itself) are covered by E2E rather than unit tests, because Jest and Vitest do not support them yet, as the Next.js testing guide notes.
 
 **Why Vitest rather than Jest:** same API and the same React Testing Library, but TypeScript and path aliases work without Babel or SWC configuration, and it is the more common choice for new projects.
+
+---
+
+## CI and deployment
+
+- **CI (GitHub Actions, `.github/workflows/ci.yml`)** runs on every pull request and every push to `main`, in two jobs:
+  1. lint, type-check and the unit, component and data-contract tests
+  2. the Playwright E2E suite on mobile, tablet and desktop, including the axe accessibility scan. It only starts if the first job passes, and it keeps the Playwright traces for 7 days when something fails.
+- **CD (Vercel)** deploys `main` to production and gives every pull request its own preview URL. A failed build never replaces the live page.
 
 ---
 
