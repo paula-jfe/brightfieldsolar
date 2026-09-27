@@ -48,12 +48,37 @@ npm run build
 npm start            # serves the static build at http://localhost:3000
 ```
 
-Tests:
+Unit and component tests:
 
 ```bash
-npm test                          # unit + component tests (Vitest + React Testing Library)
-npx playwright install chromium   # once per machine, downloads the E2E browser
-npm run test:e2e                  # builds the app and runs the end-to-end suite (Playwright + axe)
+npm test             # Vitest + React Testing Library
+```
+
+End-to-end tests (Playwright + axe):
+
+```bash
+npx playwright install --with-deps chromium   # once per machine
+npm run test:e2e                              # builds the app, starts it on port 3100 and runs the suite
+```
+
+- The install step downloads the browser Playwright drives (it does not use your own Chrome). `--with-deps` also installs the system libraries the browser needs on Linux and CI (it may ask for `sudo`); on macOS and Windows it only downloads the browser. Only Chromium is needed, so there is no need to install Firefox or WebKit.
+- Run it inside the project folder, so the browser matches the project's Playwright version. An error like `Executable doesn't exist at .../ms-playwright/...` means this step is missing or was run for another Playwright version.
+- To watch the tests run:
+
+  ```bash
+  npx playwright test --ui                       # interactive UI: pick a test, watch it, step back through each action
+  npx playwright test --headed --project=desktop # opens a real browser window (desktop only, instead of all three viewports)
+  npx playwright test --debug                    # pauses before each step
+  ```
+
+  Any of these can be slowed down with `SLOWMO` (milliseconds between actions), e.g. `SLOWMO=800 npx playwright test --headed --project=desktop --workers=1`.
+
+- If a server is already running on port 3100, the suite reuses it instead of building again. Stop it first if it is serving an old build.
+
+Type check:
+
+```bash
+npx tsc --noEmit
 ```
 
 | Script | What it does |
@@ -64,6 +89,7 @@ npm run test:e2e                  # builds the app and runs the end-to-end suite
 | `npm test` | Unit and component tests, single run |
 | `npm run test:watch` | Same, in watch mode |
 | `npm run test:e2e` | End-to-end tests against the production build, on mobile, tablet and desktop viewports |
+| `npm run test:e2e-ui` | Same tests in Playwright's interactive UI, slowed down (800 ms between actions) so you can follow them. Tick "Show browser" to watch them live. |
 
 No environment variables, accounts or external services are needed.
 
@@ -169,7 +195,7 @@ Checked at 16 widths from 320 to 1920px for horizontal overflow, clipped text an
 
 The Figma file has variable collections (primitives such as `Mirage/950`, and semantic tokens such as `text/accent-on-light`). `globals.css` mirrors them one to one as CSS custom properties, exposed to Tailwind through `@theme inline`, so components use semantic classes (`bg-bg-dark`, `text-text-on-light-muted`) instead of raw hex values. When a colour changed for accessibility, it changed in both places under the same name.
 
-Fonts (Hanken Grotesk for display, Inter for body) are self-hosted variable fonts loaded with `next/font/local`: no request to Google at runtime, no layout shift, and the build works offline.
+Fonts (Hanken Grotesk for display, Inter for body) are variable fonts loaded with `next/font/google`: Next.js downloads them at build time and serves them from the site itself, so visitors never make a request to Google and there is no layout shift. The build therefore needs internet access.
 
 ---
 

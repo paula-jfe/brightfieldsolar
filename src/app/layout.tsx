@@ -1,21 +1,10 @@
-// Root layout: self-hosted fonts and global styles.
+// Root layout: Google Fonts (downloaded at build time and served from this site) and global styles.
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Hanken_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 
-const hankenGrotesk = localFont({
-  src: "./fonts/hanken-grotesk-latin-wght.woff2",
-  weight: "100 900",
-  variable: "--font-hanken-grotesk",
-  display: "swap",
-});
-
-const inter = localFont({
-  src: "./fonts/inter-latin-wght.woff2",
-  weight: "100 900",
-  variable: "--font-inter",
-  display: "swap",
-});
+const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], variable: "--font-hanken-grotesk", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Brightfield Solar",

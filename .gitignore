@@ -43,3 +43,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# logs
+*.log
+logs/
+
+# editors and OS files
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+
+# AI assistant files (next dev can regenerate AGENTS.md / CLAUDE.md)
+AGENTS.md
+CLAUDE.md
+.claude/

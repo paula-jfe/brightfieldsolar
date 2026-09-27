@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e-ui": "SLOWMO=800 npx playwright test --ui"
   },
   "dependencies": {
     "next": "16.3.6",
@@ -37,6 +38,7 @@
     "vitest": "5.0.2"
   },
   "allowScripts": {
-    "unrs-resolver": true
+    "unrs-resolver": true,
+    "fsevents": true
   }
 }

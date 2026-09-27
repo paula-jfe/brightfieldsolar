@@ -12,7 +12,10 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: "on-first-retry",
-    launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined },
+    launchOptions: {
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined,
+      slowMo: Number(process.env.SLOWMO) || 0,
+    },
   },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
