@@ -26,7 +26,7 @@ export function LogoMark({ className = "", color = "currentColor" }: { className
  * Figma "Logo" component: yellow symbol + "Brightfield Solar" wordmark
  * (Hanken Grotesk ExtraBold 24/30, 10px gap). `tone` only changes the
  * wordmark colour; the symbol is always the brand yellow.
- * - size "md" (header): base size on mobile, 1.2× from md up, as the
+ * - size "md" (header): base size on mobile and tablet, 1.2× from lg up, as the
  *   desktop header instance in Figma is scaled to 120%.
  * - size "sm" (footer): base size everywhere.
  */
@@ -34,14 +34,14 @@ export function Logo({ tone = "on-dark", size = "md" }: { tone?: "on-dark" | "on
   const textColor = tone === "on-dark" ? "text-text-on-dark" : "text-text-on-light";
   const large = size === "md";
   return (
-    <span className={`inline-flex items-center gap-2.5 ${large ? "md:gap-3" : ""}`}>
+    <span className={`inline-flex items-center gap-2.5 ${large ? "lg:gap-3" : ""}`}>
       <LogoMark
-        className={`h-11 w-[47px] shrink-0 ${large ? "md:h-[52px] md:w-14" : ""}`}
+        className={`h-11 w-[47px] shrink-0 ${large ? "lg:h-[52px] lg:w-14" : ""}`}
         color="var(--color-accent-sun)"
       />
       <span
         className={`font-display whitespace-nowrap text-2xl font-extrabold leading-[30px] ${
-          large ? "md:text-[28.8px] md:leading-9" : ""
+          large ? "lg:text-[28.8px] lg:leading-9" : ""
         } ${textColor}`}
       >
         Brightfield Solar

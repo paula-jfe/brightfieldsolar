@@ -24,7 +24,7 @@ const FIELD_ORDER: Field[] = ["name", "email", "phone", "consent"];
 
 
 const inputBase =
-  "mt-1.5 h-12 w-full rounded-[var(--radius-inner)] bg-bg-card px-4 text-base font-normal text-text-on-light ring-inset placeholder:text-text-on-light-muted/85 transition-[box-shadow] focus:outline-none md:h-10";
+  "mt-1.5 h-12 w-full rounded-[var(--radius-inner)] bg-bg-card px-4 text-base font-normal text-text-on-light ring-inset placeholder:text-text-on-light-muted/85 transition-[box-shadow] focus:outline-none lg:h-10";
 const inputOk = "ring-1 ring-border-control focus:ring-2 focus:ring-accent-sky";
 const inputErr = "ring-[1.5px] ring-text-accent-on-light focus:ring-2";
 

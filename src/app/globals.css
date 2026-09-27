@@ -129,9 +129,15 @@ body {
 html {
   scroll-padding-top: 96px;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   html {
     scroll-padding-top: 102px;
+  }
+}
+/* Phone held sideways: the header isn't sticky there (see Header.tsx). */
+@media (max-height: 500px) {
+  html {
+    scroll-padding-top: 0;
   }
 }
 

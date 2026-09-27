@@ -24,12 +24,12 @@ export function HowItWorks({ city }: { city: CityData }) {
   ];
 
   return (
-    <section id="how-it-works" className="bg-bg-light py-14 md:py-24">
+    <section id="how-it-works" className="bg-bg-light py-14 md:py-20 lg:py-24">
       <Container>
-        <h2 className="font-display text-left text-[32px] md:text-center font-extrabold leading-[1.15] tracking-tight md:text-4xl">
+        <h2 className="font-display text-left text-[32px] font-extrabold leading-[1.15] tracking-tight md:text-4xl lg:text-center">
           How it works
         </h2>
-        <ol className="mt-8 grid gap-6 md:mt-12 md:grid-cols-3">
+        <ol className="mt-8 grid gap-6 md:mt-10 lg:mt-12 lg:grid-cols-3">
           {steps.map((step, index) => (
             <li
               key={step.title}

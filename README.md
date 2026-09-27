@@ -63,7 +63,7 @@ npm run test:e2e                  # builds the app and runs the end-to-end suite
 | `npm run lint` | ESLint (Next.js core-web-vitals + TypeScript rules) |
 | `npm test` | Unit and component tests, single run |
 | `npm run test:watch` | Same, in watch mode |
-| `npm run test:e2e` | End-to-end tests against the production build, desktop and mobile viewports |
+| `npm run test:e2e` | End-to-end tests against the production build, on mobile, tablet and desktop viewports |
 
 No environment variables, accounts or external services are needed.
 
@@ -80,7 +80,7 @@ One page, six sections, in the order the brief asks for. Each one answers a ques
 5. **FAQ** — The six questions from the data file in an accordion. Answers stay in the HTML even when collapsed, so search engines and AI assistants can read them.
 6. **Final call to action** — A lead form (name, email, phone, consent) and the phone number as a `tel:` link.
 
-The page is mobile-first (a lot of traffic is someone on their phone, standing in the yard looking at their roof) and has a desktop layout from 768px up.
+The page is mobile-first (a lot of traffic is someone on their phone, standing in the yard looking at their roof), with a tablet step from 768px and the desktop layout from 1024px (see [Responsive behaviour](#responsive-behaviour)).
 
 ### The simulator
 
@@ -140,6 +140,30 @@ To add a city:
 Every city page is **statically generated** at build time (`generateStaticParams`), so it is served as plain HTML from a CDN: fast on a phone on a weak connection, and fully readable by search engines and AI assistants without running JavaScript. `generateMetadata` sets a per-city title, description, Open Graph and Twitter tags, so a forwarded link previews with the city name and stats. Unknown slugs return a 404.
 
 Only the parts that need state are Client Components: the simulator, the lead form, the FAQ accordion, the carousels and the mobile menu. City data is passed to them as props from the server, so there is no client-side data fetching.
+
+### Responsive behaviour
+
+Three steps, using Tailwind's default breakpoints consistently:
+
+| | Mobile (base) | Tablet (`md`, 768px+) | Desktop (`lg`, 1024px+) |
+|---|---|---|---|
+| Layout | One column | One column, roomier | Two or three columns, as in the Figma desktop frame |
+| Header | Menu button | Menu button | Full navigation and CTA |
+| Hero title | 36px | 42px | 48px |
+| "Estimate your savings" | 28px | 34px | 40px |
+| Monthly savings figure | 40px | 48px | 56px |
+| Card titles | 18px | 20px | 24px |
+| Section spacing | 56px | 80px | 96px |
+| Card radius | 16px | 16px | 24px |
+| Side padding | 20px | 40px | 64px |
+
+Mobile (390px) and desktop (1440px) match the Figma frames. The tablet values were interpolated between them in code, then documented on the Figma **Tablet** page (home plus the simulator and form states at 768px). Layout, radius and the final type size all switch together at 1024px, because a two-column simulator or a full navigation bar does not fit comfortably below that. A few details depend on the available width rather than the device:
+
+- The hero stat cards are compact wherever the image is narrow (phones, and 1024–1279px, where the square image is about 355px wide) and regular elsewhere, so they never overlap.
+- The profile icons are hidden on phones and between 1024 and 1279px, where each card is only about 200px wide.
+- On very short screens, such as a phone held sideways, the header stops being sticky, so it does not take a quarter of the height.
+
+Checked at 16 widths from 320 to 1920px for horizontal overflow, clipped text and overlapping elements, plus a landscape phone.
 
 ### Design system in code
 
@@ -231,6 +255,7 @@ The brief leaves some points open on purpose. How each one was resolved:
 9. **Crew photos are AI-generated** (allowed by the brief), with no company logos, showing US-style residential roofs.
 10. **Three data fields are not displayed yet:** `utilityName`, `metroArea` and `popularNeighborhoods`. They stay in the data file for the next iteration (see [Pending](#what-is-pending)).
 11. **`/` redirects to `/phoenix-az`,** so there is exactly one URL per city page and one place that renders it.
+12. **Tablet sizes are interpolated** between the mobile (390px) and desktop (1440px) designs, then documented on the Figma Tablet page. See [Responsive behaviour](#responsive-behaviour).
 
 ---
 
@@ -265,7 +290,7 @@ The brief does not require tests. These exist because the simulator's rules are 
   
   It protects the promise that a new city is just a data file.
 
-**4. End-to-end (Playwright, desktop and mobile)**
+**4. End-to-end (Playwright, on mobile, tablet and desktop)**
 - `/` redirects, the title is correct, and the six sections are in order.
 - An unknown city returns 404.
 - A visitor picks a profile, sees the minimum-panels note and sends the form.
@@ -280,7 +305,7 @@ Async Server Components (the page itself) are covered by E2E rather than unit te
 
 ## Accessibility
 
-Target: **WCAG 2.2 AA**. Checked with axe-core in every page state, computed contrast ratios, a keyboard walk and zoom/reflow at 320px. There are currently **zero axe violations** on desktop and mobile.
+Target: **WCAG 2.2 AA**. Checked with axe-core in every page state, computed contrast ratios, a keyboard walk and zoom/reflow at 320px. There are currently **zero axe violations** on mobile, tablet and desktop.
 
 Highlights:
 - **Focus is always visible.** The ring is blue on light surfaces and yellow on dark ones.
@@ -339,7 +364,7 @@ I used **Claude (Anthropic)** throughout, as a pair designer and engineer. I mad
 
 **How the output was verified**
 - **The brief's worked example is an automated test,** both at the formula level and clicked through the UI. When a behaviour mattered, I checked the test would fail without it; for example, removing the coverage reset makes the simulator test fail at row 4.
-- **Every visual change was checked in a real browser (Playwright/Chromium)** at desktop and mobile sizes, compared against the Figma frames, and proposed design changes were shown as before/after screenshots before being applied.
+- **Every visual change was checked in a real browser (Playwright/Chromium)** at mobile, tablet and desktop sizes, compared against the Figma frames, and proposed design changes were shown as before/after screenshots before being applied.
 - **Accessibility:** axe-core, computed contrast ratios and keyboard walks. Security: `npm audit`, header inspection and code scans.
 - **Lint, type-check, all unit, component and E2E tests,** and a production build were run after each change.
 - **No dependency was added without my approval,** and I install packages myself.

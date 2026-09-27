@@ -29,8 +29,9 @@ const INITIAL_BILL = 220;
  * parent, so the client bundle doesn't need its own data-fetching logic.
  *
  * Mobile-first: single card, single column (matching the Figma mobile
- * frame's "Simulator (Live)" instance). At md it splits into a two-column
- * grid — inputs on the left, live result on the right — matching desktop.
+ * frame's "Simulator (Live)" instance), kept on tablets with roomier
+ * padding. At lg (1024px) it splits into a two-column grid — inputs on the
+ * left, live result on the right — matching desktop.
  */
 export function Simulator({ city }: { city: CityData }) {
   const initialProfileIndex = useMemo(
@@ -67,10 +68,10 @@ export function Simulator({ city }: { city: CityData }) {
   }
 
   return (
-    <section id="estimate" className="bg-bg-light py-14 md:py-24">
+    <section id="estimate" className="bg-bg-light py-14 md:py-20 lg:py-24">
       <Container>
         <div className="flex flex-col gap-2">
-          <h2 className="font-display text-[28px] font-extrabold leading-[1.15] md:text-[40px]">
+          <h2 className="font-display text-[28px] font-extrabold leading-[1.15] md:text-[34px] lg:text-[40px]">
             Estimate your savings
           </h2>
           <p className="text-lg leading-7 text-text-on-light-muted">
@@ -83,9 +84,9 @@ export function Simulator({ city }: { city: CityData }) {
             estimate running edge to edge (Figma mobile "Simulator card").
             Desktop: two columns — inputs card on the left, result column on
             the right (Figma desktop "Columns"). */}
-        <div className="mt-8 flex flex-col gap-6 overflow-hidden rounded-[var(--radius-card)] bg-bg-card py-6 ring-1 ring-border-light md:mt-12 md:grid md:grid-cols-[minmax(0,681fr)_minmax(0,599fr)] md:items-start md:gap-8 md:overflow-visible md:rounded-none md:bg-transparent md:py-0 md:ring-0">
-          <div className="flex flex-col gap-5 px-6 md:gap-7 md:rounded-[var(--radius-card)] md:bg-bg-card md:p-10 md:ring-1 md:ring-border-light">
-            <h3 className="font-display text-lg font-extrabold md:text-2xl">Which home is closest to yours?</h3>
+        <div className="mt-8 flex flex-col gap-6 overflow-hidden rounded-[var(--radius-card)] bg-bg-card py-6 ring-1 ring-border-light md:mt-10 md:gap-8 md:py-8 lg:mt-12 lg:grid lg:grid-cols-[minmax(0,681fr)_minmax(0,599fr)] lg:items-start lg:overflow-visible lg:rounded-none lg:bg-transparent lg:py-0 lg:ring-0">
+          <div className="flex flex-col gap-5 px-6 md:gap-6 md:px-10 lg:gap-7 lg:rounded-[var(--radius-card)] lg:bg-bg-card lg:p-10 lg:ring-1 lg:ring-border-light">
+            <h3 className="font-display text-lg font-extrabold md:text-xl lg:text-2xl">Which home is closest to yours?</h3>
             <ProfileSelector
               profiles={city.householdProfiles}
               selectedIndex={selectedProfileIndex}
@@ -115,9 +116,9 @@ export function Simulator({ city }: { city: CityData }) {
             />
           </div>
 
-          <div className="flex flex-col gap-6 md:gap-5">
+          <div className="flex flex-col gap-6 lg:gap-5">
             <SimulatorResult result={result} monthlyBill={monthlyBill} minPanels={city.minPanels} />
-            <div className="flex flex-col gap-3 px-6 md:gap-5 md:px-0">
+            <div className="flex flex-col gap-3 px-6 md:gap-4 md:px-10 lg:gap-5 lg:px-0">
               <p className="text-[15px] leading-[1.5] text-text-on-light-muted">{city.stateIncentiveNote}</p>
               <LinkButton href="#contact" variant="primary" className="w-full">
                 Talk to a solar expert

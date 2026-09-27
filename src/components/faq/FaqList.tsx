@@ -23,7 +23,7 @@ export function FaqList({ entries }: { entries: FaqEntry[] }) {
   }
 
   return (
-    <div className="mx-auto mt-8 max-w-[880px] divide-y divide-border-light overflow-hidden rounded-[var(--radius-card)] bg-bg-card ring-1 ring-border-light md:mt-12">
+    <div className="mx-auto mt-8 max-w-[880px] divide-y divide-border-light overflow-hidden rounded-[var(--radius-card)] bg-bg-card ring-1 ring-border-light md:mt-10 lg:mt-12">
       {entries.map((entry, index) => {
         const isOpen = open.has(index);
         const panelId = `${baseId}-panel-${index}`;

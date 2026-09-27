@@ -5,7 +5,7 @@ const PORT = 3100;
 /**
  * One end-to-end flow against the production build. It covers what unit and
  * component tests can't: the async Server Component page, static params,
- * the redirect from "/", images and the real CSS at two viewport sizes.
+ * the redirect from "/", images and the real CSS at three viewport sizes.
  * First run on a new machine: `npx playwright install chromium`.
  */
 export default defineConfig({
@@ -23,6 +23,8 @@ export default defineConfig({
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
+    // Tablet: single-column layout with the menu button (the desktop layout starts at 1024px).
+    { name: "tablet", use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 }, hasTouch: true } },
   ],
   webServer: {
     command: `npm run build && npm run start -- -p ${PORT}`,

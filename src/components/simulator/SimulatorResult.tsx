@@ -31,14 +31,14 @@ export function SimulatorResult({
   ];
 
   return (
-    <div className="flex flex-col gap-5 bg-bg-dark px-6 py-7 text-text-on-dark md:gap-6 md:rounded-[var(--radius-card)] md:p-10">
+    <div className="flex flex-col gap-5 bg-bg-dark px-6 py-7 text-text-on-dark md:gap-6 md:px-10 md:py-8 lg:rounded-[var(--radius-card)] lg:p-10">
       <h3 className="font-display text-lg font-bold text-text-on-dark-muted md:text-xl">Your solar estimate</h3>
 
       <SavingsBar bill={monthlyBill} monthlySavings={result.monthlySavings} />
 
       {/* aria-live so screen readers hear the new figure as sliders move. */}
       <p aria-live="polite" className="flex items-center gap-5">
-        <span className="font-display text-[40px] font-extrabold leading-none text-text-accent-on-dark md:text-[56px]">
+        <span className="font-display text-[40px] font-extrabold leading-none text-text-accent-on-dark md:text-5xl lg:text-[56px]">
           {formatCurrency(result.monthlySavings)}
         </span>
         <span className="text-sm leading-5 text-text-on-dark-muted md:text-lg md:leading-7">
@@ -49,7 +49,7 @@ export function SimulatorResult({
       <ul className="grid grid-cols-[auto_1fr] items-baseline gap-x-6 gap-y-3 md:gap-x-8">
         {stats.map((stat) => (
           <li key={stat.label} className="contents">
-            <span className="text-lg font-semibold md:text-2xl">{stat.value}</span>
+            <span className="text-lg font-semibold md:text-xl lg:text-2xl">{stat.value}</span>
             <span className="text-sm leading-[1.4] text-text-on-dark-muted md:text-base">{stat.label}</span>
           </li>
         ))}

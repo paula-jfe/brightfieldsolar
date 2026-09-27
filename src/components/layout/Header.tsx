@@ -14,13 +14,16 @@ const navLinks = [
 ];
 
 /**
- * Sticky header with a 95% dark background + blur. Desktop: logo, nav links
- * (hover = white text + yellow underline, the Figma "Nav Link" hover state)
- * and the primary CTA. Mobile: logo + menu button; the open menu drops down
+ * Sticky header with a 95% dark background + blur. Desktop (lg, 1024px+):
+ * logo, nav links (hover = white text + yellow underline, the Figma "Nav
+ * Link" hover state) and the primary CTA. Mobile and tablet: logo + menu
+ * button, because the full nav doesn't fit next to the logo below 1024px; the open menu drops down
  * *over* the page (absolutely positioned under the header, so it never
  * pushes content down) with the same translucent background, and the header
  * row itself doesn't change colour (Figma "Menu=Open"). Client component only
  * for the open state, closing on link tap, Escape, or resizing to desktop.
+ * On very short screens (a phone held sideways) it stops being sticky, so it
+ * doesn't take a quarter of the height while reading.
  */
 export function Header({ city }: { city: CityData }) {
   const [open, setOpen] = useState(false);
@@ -36,7 +39,7 @@ export function Header({ city }: { city: CityData }) {
       if (menuRef.current?.contains(document.activeElement)) toggleRef.current?.focus();
       setOpen(false);
     };
-    const onResize = () => window.innerWidth >= 768 && setOpen(false);
+    const onResize = () => window.innerWidth >= 1024 && setOpen(false);
     document.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
     return () => {
@@ -48,13 +51,13 @@ export function Header({ city }: { city: CityData }) {
   const close = () => setOpen(false);
 
   return (
-    <header className="surface-dark sticky top-0 z-40 bg-bg-dark/95 backdrop-blur">
-      <Container className="flex h-24 items-center justify-between md:h-[102px]">
+    <header className="surface-dark sticky top-0 z-40 bg-bg-dark/95 backdrop-blur [@media(max-height:500px)]:relative">
+      <Container className="flex h-24 items-center justify-between lg:h-[102px]">
         <Link href={`/${city.slug}`} aria-label="Brightfield Solar home" onClick={close}>
           <Logo tone="on-dark" />
         </Link>
 
-        <div className="hidden items-center gap-10 md:flex">
+        <div className="hidden items-center gap-10 lg:flex">
           <nav aria-label="Main" className="flex items-center gap-8">
             {navLinks.map((link) => (
               <a
@@ -79,7 +82,7 @@ export function Header({ city }: { city: CityData }) {
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="-mr-2.5 flex h-11 w-11 items-center justify-center rounded-full text-text-on-dark active:bg-white/12 md:hidden"
+          className="-mr-2.5 flex h-11 w-11 items-center justify-center rounded-full text-text-on-dark active:bg-white/12 lg:hidden"
         >
           {/* Three bars that morph into an X (top/bottom rotate, middle fades). */}
           <span aria-hidden="true" className="relative block h-[19px] w-6">
@@ -109,7 +112,7 @@ export function Header({ city }: { city: CityData }) {
         id="mobile-menu"
         aria-label="Menu"
         inert={!open}
-        className={`absolute inset-x-0 top-full origin-top border-t border-border-dark bg-bg-dark/95 shadow-[0_16px_32px_rgba(13,18,26,0.35)] backdrop-blur transition-[opacity,transform] md:hidden ${
+        className={`absolute inset-x-0 top-full origin-top border-t border-border-dark bg-bg-dark/95 shadow-[0_16px_32px_rgba(13,18,26,0.35)] backdrop-blur transition-[opacity,transform] lg:hidden ${
           open ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
         }`}
       >

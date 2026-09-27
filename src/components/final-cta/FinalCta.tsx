@@ -11,13 +11,13 @@ import { LeadForm } from "./LeadForm";
 export function FinalCta({ city }: { city: CityData }) {
   const tel = city.phone.replace(/[^\d+]/g, "");
   return (
-    <section id="contact" className="bg-bg-light py-14 md:py-24">
-      <Container className="flex flex-col gap-10 md:grid md:grid-cols-[minmax(0,587fr)_minmax(0,653fr)] md:gap-[72px]">
+    <section id="contact" className="bg-bg-light py-14 md:py-20 lg:py-24">
+      <Container className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,587fr)_minmax(0,653fr)] lg:gap-[72px]">
         <div className="flex flex-col gap-4">
           <h2 className="font-display text-[32px] font-extrabold leading-[1.15] tracking-tight md:text-4xl">
             Ready to take the next step?
           </h2>
-          <p className="text-lg leading-7 text-text-on-light-muted">
+          <p className="max-w-2xl text-lg leading-7 text-text-on-light-muted">
             Talk to a {city.city} solar expert about your estimate, no pressure, no obligation. We&apos;ll follow up
             within a business day.
           </p>

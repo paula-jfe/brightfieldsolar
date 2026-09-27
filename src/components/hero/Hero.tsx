@@ -18,19 +18,19 @@ const gridPatternStyle = {
  * same dark background instead of on the light page, as in the Figma frame
  * where the hero starts at y=0 behind the header.
  *
- * Mobile: headline → animated visual → body → full-width button, matching
- * the Figma mobile frame's order. Desktop: copy on the left, visual on the
- * right. The primary CTA scrolls to the simulator, because the brief says
+ * Mobile and tablet: headline → animated visual → body → button, matching
+ * the Figma mobile frame's order. Desktop (lg): copy on the left, visual on
+ * the right. The primary CTA scrolls to the simulator, because the brief says
  * the savings simulation is what most often leads to a site-visit request.
  */
 export function Hero({ city }: { city: CityData }) {
   return (
-    <section className="surface-dark relative -mt-24 overflow-hidden bg-bg-dark pb-14 pt-28 text-text-on-dark md:-mt-[102px] md:pb-24 md:pt-[200px]">
+    <section className="surface-dark relative -mt-24 overflow-hidden bg-bg-dark pb-14 pt-28 text-text-on-dark md:pb-20 md:pt-32 lg:-mt-[102px] lg:pb-24 lg:pt-[200px]">
       <div aria-hidden="true" className="absolute inset-0 opacity-[0.1] md:opacity-[0.18]" style={gridPatternStyle} />
 
-      <Container className="relative flex flex-col gap-6 md:grid md:grid-cols-[minmax(0,715fr)_minmax(0,533fr)] md:items-center md:gap-16">
-        <div className="contents md:flex md:flex-col md:gap-6">
-          <h1 className="font-display order-1 text-[36px] font-extrabold leading-[1.12] tracking-tight md:text-5xl md:leading-[54px]">
+      <Container className="relative flex flex-col gap-6 md:gap-8 lg:grid lg:grid-cols-[minmax(0,715fr)_minmax(0,533fr)] lg:items-center lg:gap-16">
+        <div className="contents lg:flex lg:flex-col lg:gap-6">
+          <h1 className="font-display order-1 text-[36px] font-extrabold leading-[1.12] tracking-tight md:text-[42px] md:leading-[48px] lg:text-5xl lg:leading-[54px]">
             Make the most of <span className="text-text-accent-on-dark">{city.city}</span> sunshine.
           </h1>
           <p className="order-3 max-w-xl text-lg leading-7 text-text-on-dark-muted">
