@@ -1,20 +1,12 @@
+// Result card with the estimate and the minimum-panels and capped-savings notes.
 import type { SimulatorResult as SimulatorResultData } from "@/lib/calculator";
 import { formatCurrency, formatCurrencyPrecise, formatPanelCount, formatYears } from "@/lib/format";
 import { SavingsBar } from "./SavingsBar";
 
-/** "an 8-panel", "an 11-panel", "an 18-panel", otherwise "a 10-panel". */
 function articleFor(n: number) {
   return /^(8|11|18)/.test(String(n)) ? "an" : "a";
 }
 
-/**
- * Figma "Solar Estimate" component (the dark result card). The two notes
- * are the page's answer to the brief's special cases:
- * - minimum panels applies: explains why the system is bigger than asked
- *   for, and why lowering coverage changes nothing;
- * - savings capped: explains that extra generation becomes a utility credit.
- * Both are driven by flags from calculator.ts and can appear together.
- */
 export function SimulatorResult({
   result,
   monthlyBill,
@@ -36,7 +28,6 @@ export function SimulatorResult({
 
       <SavingsBar bill={monthlyBill} monthlySavings={result.monthlySavings} />
 
-      {/* aria-live so screen readers hear the new figure as sliders move. */}
       <p aria-live="polite" className="flex items-center gap-5">
         <span className="font-display text-[40px] font-extrabold leading-none text-text-accent-on-dark md:text-5xl lg:text-[56px]">
           {formatCurrency(result.monthlySavings)}

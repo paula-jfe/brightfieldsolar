@@ -1,3 +1,4 @@
+// Footer with logo, disclaimer and city contact.
 import type { CityData } from "@/data/types";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/ui/Logo";

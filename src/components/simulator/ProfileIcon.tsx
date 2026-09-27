@@ -1,9 +1,4 @@
-/**
- * Small illustrative glyphs for the household profile cards (desktop only),
- * exported from the Figma "Profile Option" component. Drawn with
- * currentColor so the selected state can flip them to white.
- */
-/** Icon names the data file may use in `householdProfiles[].icon`. */
+// Icons for the household profile cards.
 export const PROFILE_ICON_NAMES = ["apartment", "house", "houseAC", "pool"] as const;
 
 export function ProfileIcon({ name }: { name?: string }) {

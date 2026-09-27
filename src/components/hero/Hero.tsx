@@ -1,28 +1,14 @@
+// Hero section: headline, animated visual and the main call to action.
 import type { CityData } from "@/data/types";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { HeroVisual } from "./HeroVisual";
 
-// Repeating-gradient stand-in for the Figma file's 48px grid-line pattern
-// (dozens of 1px line layers) — same visual result, one CSS rule instead
-// of ~60 DOM nodes. Shown on every breakpoint, a bit fainter on mobile
-// (10% vs 18%) so the denser grid doesn't compete with the headline.
 const gridPatternStyle = {
   backgroundImage:
     "repeating-linear-gradient(to right, var(--color-border-dark) 0 1px, transparent 1px 48px), repeating-linear-gradient(to bottom, var(--color-border-dark) 0 1px, transparent 1px 48px)",
 } as const;
 
-/**
- * The section is pulled up under the sticky header (negative top margin equal
- * to the header height, 96px / 102px) so the translucent header sits on the
- * same dark background instead of on the light page, as in the Figma frame
- * where the hero starts at y=0 behind the header.
- *
- * Mobile and tablet: headline → animated visual → body → button, matching
- * the Figma mobile frame's order. Desktop (lg): copy on the left, visual on
- * the right. The primary CTA scrolls to the simulator, because the brief says
- * the savings simulation is what most often leads to a site-visit request.
- */
 export function Hero({ city }: { city: CityData }) {
   return (
     <section className="surface-dark relative -mt-24 overflow-hidden bg-bg-dark pb-14 pt-28 text-text-on-dark md:pb-20 md:pt-32 lg:-mt-[102px] lg:pb-24 lg:pt-[200px]">

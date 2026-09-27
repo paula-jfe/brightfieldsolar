@@ -1,10 +1,4 @@
-/**
- * Brand loading indicator (Figma "Loader"), built from the Brand DNA "Sun":
- * the 8 rays light up in sequence, clockwise, around a static circle. Each
- * ray runs the same `sun-ray` keyframes with a 0.1s stagger (see
- * globals.css), so one full turn takes 0.8s. `tone` switches between the
- * brand yellow (on dark) and the dark navy (inside the yellow button).
- */
+// Sun loader animation, used in the form button while sending.
 const RAYS: [number, number, number, number][] = [
   [296, 52, 296, 160],
   [457, 130, 392, 192],
@@ -25,9 +19,7 @@ export function Loader({
 }: {
   size?: "sm" | "lg";
   tone?: "sun" | "dark";
-  /** Text announced to screen readers. */
   label?: string;
-  /** When the surrounding element already announces the state (e.g. a busy button). */
   decorative?: boolean;
   className?: string;
 }) {
@@ -55,8 +47,6 @@ export function Loader({
             x2={x2}
             y2={y2}
             className="sun-loader-ray"
-            // Negative delays start every ray mid-cycle, so the loop is
-            // already "spinning" on the first frame.
             style={{ animationDelay: `${index * 0.1 - 0.8}s` }}
           />
         ))}

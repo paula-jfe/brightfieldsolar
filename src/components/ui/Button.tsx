@@ -1,3 +1,4 @@
+// Button and link styled as the Figma Button component.
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from "react";
 
 const baseClasses =

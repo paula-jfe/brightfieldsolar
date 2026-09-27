@@ -1,12 +1,6 @@
+// Bar that splits the monthly bill into savings and what is left to pay.
 import { formatCurrency } from "@/lib/format";
 
-/**
- * Figma "Savings Bar": the monthly bill split into what you would still pay
- * with solar (muted) and what solar saves (yellow). Widths are percentages
- * of the bill, so they always sum to 100% — monthlySavings is already capped
- * at the bill (see calculator.ts), so the remainder is never negative. When
- * savings are capped the whole bar turns yellow and "with solar" reads $0.
- */
 export function SavingsBar({ bill, monthlySavings }: { bill: number; monthlySavings: number }) {
   const withSolar = Math.max(bill - monthlySavings, 0);
   const savingsPercent = bill > 0 ? Math.min((monthlySavings / bill) * 100, 100) : 0;

@@ -1,9 +1,9 @@
+// Carousel of the city's local crews.
 import Image from "next/image";
 import type { CityData } from "@/data/types";
 import { publicAssetExists } from "@/lib/public-asset";
 import { Carousel } from "./Carousel";
 
-/** Figma "Crew Card". Photo comes from the data file; placeholder if missing. */
 export function LocalCrews({ city }: { city: CityData }) {
   return (
     <Carousel
@@ -17,9 +17,6 @@ export function LocalCrews({ city }: { city: CityData }) {
           className="flex h-full flex-col gap-6 rounded-[var(--radius-card)] bg-bg-dark-raised p-6"
         >
           {publicAssetExists(crew.photo) ? (
-            // Photos live in /public because their paths come from the city
-            // data file. next/image still resizes them (the originals are
-            // ~1 MB at 1776px; a card needs ~620px).
             <Image
               src={crew.photo}
               alt={`${crew.name} at work on a ${city.city} roof`}

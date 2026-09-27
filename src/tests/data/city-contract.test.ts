@@ -1,4 +1,5 @@
 // @vitest-environment node
+// Checks that every city data file is valid, so a new city is just a JSON file.
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
@@ -6,13 +7,6 @@ import { getAllCitySlugs, getCityBySlug } from "@/data/cities";
 import { BILL_MAX, BILL_MIN, BILL_STEP } from "@/lib/calculator";
 import { PROFILE_ICON_NAMES } from "@/components/simulator/ProfileIcon";
 
-/**
- * The city JSON files are the contract between content and code: the brief
- * says a new city is "just a data file". TypeScript checks the shape at build
- * time; this checks what types can't — values in range, images that really
- * exist, profiles the simulator can actually select — for every city, so a
- * new file with a typo fails here instead of on the live page.
- */
 describe.each(getAllCitySlugs())("city data: %s", (slug) => {
   const city = getCityBySlug(slug)!;
 
@@ -42,8 +36,6 @@ describe.each(getAllCitySlugs())("city data: %s", (slug) => {
     expect(city.householdProfiles.length).toBeGreaterThan(0);
     for (const profile of city.householdProfiles) {
       expect(profile.label.trim(), "label").not.toBe("");
-      // Selecting a profile sets the bill slider to this value, so it must be
-      // a value the slider can show: inside its range and on its step.
       expect(profile.typicalBill, profile.label).toBeGreaterThanOrEqual(BILL_MIN);
       expect(profile.typicalBill, profile.label).toBeLessThanOrEqual(BILL_MAX);
       expect((profile.typicalBill - BILL_MIN) % BILL_STEP, `${profile.label} is off the slider step`).toBe(0);

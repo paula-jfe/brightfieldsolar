@@ -1,3 +1,4 @@
+// Lead form with validation, a simulated send and the confirmation message.
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
@@ -16,31 +17,15 @@ import {
 type Status = "idle" | "submitting" | "success";
 
 const EMPTY: Values = { name: "", email: "", phone: "", consent: false };
-// No backend (the brief allows the CTA to go nowhere): a short delay stands
-// in for the request, then the confirmation shows for a while and resets.
 const FAKE_REQUEST_MS = 1200;
 const CONFIRMATION_MS = 7000;
 const FIELD_ORDER: Field[] = ["name", "email", "phone", "consent"];
-
 
 const inputBase =
   "mt-1.5 h-12 w-full rounded-[var(--radius-inner)] bg-bg-card px-4 text-base font-normal text-text-on-light ring-inset placeholder:text-text-on-light-muted/85 transition-[box-shadow] focus:outline-none lg:h-10";
 const inputOk = "ring-1 ring-border-control focus:ring-2 focus:ring-accent-sky";
 const inputErr = "ring-[1.5px] ring-text-accent-on-light focus:ring-2";
 
-/**
- * Figma "Lead form" with its three states:
- * - Validation errors ("Final CTA – Validation errors"): rules live in
- *   lib/lead-form.ts (unit tested). A field is checked when the person leaves
- *   it, then live while they fix it; submitting checks everything and focuses
- *   the first invalid field. Messages are tied to inputs via aria-describedby.
- *   The phone formats itself as (602) 555-0100 and likely email domain typos
- *   get a one-tap "Did you mean …?" fix.
- * - Loading: the button swaps to the Sun loader + "Sending…".
- * - Submitted ("Final CTA – Submitted"): the confirmation replaces the form
- *   in the same card (both are stacked in one grid cell, so the card keeps
- *   its height and nothing below jumps), then it times out and resets.
- */
 export function LeadForm({ city }: { city: string }) {
   const uid = useId();
   const [values, setValues] = useState<Values>(EMPTY);
@@ -49,8 +34,6 @@ export function LeadForm({ city }: { city: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const refs = useRef<Partial<Record<Field, HTMLInputElement | null>>>({});
   const successHeading = useRef<HTMLHeadingElement>(null);
-  // Set when the confirmation (which holds focus) is about to disappear, so
-  // focus can move to the first field instead of being lost (WCAG 2.4.3).
   const refocusForm = useRef(false);
 
   useEffect(() => {
@@ -75,10 +58,6 @@ export function LeadForm({ city }: { city: string }) {
     }
   }, [status]);
 
-  // Only show a text field's error once it has been touched (left with
-  // something typed in it, or submitted), then keep it in sync as the
-  // person types. Consent is only "touched" by a submit attempt, so toggling
-  // the box on its own never shows an error.
   function visibleErrors(next: Values, touchedNow: Partial<Record<Field, boolean>>): Errors {
     const all = validateLead(next);
     return Object.fromEntries(Object.entries(all).filter(([field]) => touchedNow[field as Field])) as Errors;
@@ -91,8 +70,6 @@ export function LeadForm({ city }: { city: string }) {
   }
 
   function blur(field: Field) {
-    // Leaving a field empty isn't a mistake yet (the person may just be
-    // tabbing through): empty fields are only flagged on submit.
     const value = values[field];
     if (!touched[field] && typeof value === "string" && value.trim() === "") return;
     const touchedNow = { ...touched, [field]: true };
@@ -190,7 +167,6 @@ export function LeadForm({ city }: { city: string }) {
 
         <div>
           <label className="flex items-start gap-2.5 text-sm leading-5 text-text-on-light-muted">
-            {/* Figma "Consent Checkbox": checked = brand yellow + dark check. */}
             <span className="relative mt-px h-5 w-5 shrink-0">
               <input
                 ref={(el) => {
@@ -241,16 +217,10 @@ export function LeadForm({ city }: { city: string }) {
         </button>
       </form>
 
-      {/* Screen readers don't reliably announce a button's text changing, so
-          the sending state is also spoken from a visually hidden live region. */}
       <p role="status" className="sr-only">
         {status === "submitting" ? "Sending your request…" : ""}
       </p>
 
-      {/* Confirmation (Figma "Final CTA – Submitted"). Centred on every
-          screen size: it stands in for the whole form as one self-contained
-          message, unlike the left-aligned reading content around it. Always in
-          the DOM so the live region is registered before it fills in. */}
       <div
         aria-live="polite"
         className={`flex flex-col items-center justify-center gap-4 p-6 text-center transition-opacity md:p-8 ${

@@ -1,3 +1,4 @@
+// Savings simulator: household profiles, sliders and the live result.
 "use client";
 
 import { useMemo, useState } from "react";
@@ -21,18 +22,6 @@ import { SimulatorResult } from "./SimulatorResult";
 
 const INITIAL_BILL = 220;
 
-/**
- * The only Client Component in the page. Everything here is interactive
- * state (bill, coverage, which profile is highlighted) that has to live in
- * the browser and recompute on every change — there's no way to do that as
- * a Server Component. City data comes in as a prop from the server-rendered
- * parent, so the client bundle doesn't need its own data-fetching logic.
- *
- * Mobile-first: single card, single column (matching the Figma mobile
- * frame's "Simulator (Live)" instance), kept on tablets with roomier
- * padding. At lg (1024px) it splits into a two-column grid — inputs on the
- * left, live result on the right — matching desktop.
- */
 export function Simulator({ city }: { city: CityData }) {
   const initialProfileIndex = useMemo(
     () => city.householdProfiles.findIndex((profile) => profile.typicalBill === INITIAL_BILL),
@@ -63,7 +52,6 @@ export function Simulator({ city }: { city: CityData }) {
   }
 
   function handleCoverageChange(value: number) {
-    // Coverage isn't part of a profile, so changing it keeps the selection.
     setCoverage(value);
   }
 
@@ -80,10 +68,6 @@ export function Simulator({ city }: { city: CityData }) {
           </p>
         </div>
 
-        {/* Mobile: one white card holding inputs + result, with the dark
-            estimate running edge to edge (Figma mobile "Simulator card").
-            Desktop: two columns — inputs card on the left, result column on
-            the right (Figma desktop "Columns"). */}
         <div className="mt-8 flex flex-col gap-6 overflow-hidden rounded-[var(--radius-card)] bg-bg-card py-6 ring-1 ring-border-light md:mt-10 md:gap-8 md:py-8 lg:mt-12 lg:grid lg:grid-cols-[minmax(0,681fr)_minmax(0,599fr)] lg:items-start lg:overflow-visible lg:rounded-none lg:bg-transparent lg:py-0 lg:ring-0">
           <div className="flex flex-col gap-5 px-6 md:gap-6 md:px-10 lg:gap-7 lg:rounded-[var(--radius-card)] lg:bg-bg-card lg:p-10 lg:ring-1 lg:ring-border-light">
             <h3 className="font-display text-lg font-extrabold md:text-xl lg:text-2xl">Which home is closest to yours?</h3>

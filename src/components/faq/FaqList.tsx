@@ -1,14 +1,9 @@
+// FAQ accordion; answers stay in the HTML when collapsed.
 "use client";
 
 import { useId, useState } from "react";
 import type { FaqEntry } from "@/data/types";
 
-/**
- * Accordion with a smooth open/close: each answer sits in a grid row that
- * animates between 0fr and 1fr (height: auto can't be transitioned
- * directly). Answers stay in the HTML at all times, so search engines and
- * AI assistants still read them. The first question starts open.
- */
 export function FaqList({ entries }: { entries: FaqEntry[] }) {
   const baseId = useId();
   const [open, setOpen] = useState<Set<number>>(() => new Set([0]));

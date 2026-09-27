@@ -1,4 +1,5 @@
 // @vitest-environment node
+// City registry tests.
 import { test } from "vitest";
 import assert from "node:assert/strict";
 import { getCityBySlug, getAllCitySlugs, DEFAULT_CITY_SLUG } from "@/data/cities";

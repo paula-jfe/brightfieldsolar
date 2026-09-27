@@ -1,3 +1,4 @@
+// End-to-end checks of the Phoenix page in a real browser, including an axe accessibility scan.
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
@@ -20,14 +21,11 @@ test("a visitor estimates their savings and asks to be contacted", async ({ page
   await page.goto("/phoenix-az");
   const estimate = page.locator("#estimate");
 
-  // Picking a profile fills in the bill; the 8-panel minimum kicks in.
-  // Matched by the visible bill, since the card label is shorter on mobile.
   await estimate.getByRole("button", { name: /typical \$90\/mo/i }).click();
   await expect(estimate.getByRole("slider", { name: "Monthly bill" })).toHaveValue("90");
   await expect(estimate.getByText("8 panels", { exact: true })).toBeVisible();
   await expect(estimate.getByText(/8-panel minimum/)).toBeVisible();
 
-  // The CTA under the estimate scrolls to the contact form.
   await estimate.getByRole("link", { name: "Talk to a solar expert" }).click();
   await expect(page).toHaveURL(/#contact$/);
 
@@ -43,7 +41,6 @@ test("a visitor estimates their savings and asks to be contacted", async ({ page
 });
 
 test("the confirmation replaces the form, then gives the form back", async ({ page }) => {
-  // Control time so the 1.2s fake request and 7s confirmation run instantly.
   await page.clock.install();
   await page.goto("/phoenix-az");
 
@@ -69,9 +66,6 @@ test("the confirmation replaces the form, then gives the form back", async ({ pa
   await expect(form.getByRole("textbox", { name: /^name/i })).toBeFocused();
 });
 
-// Automated WCAG 2.2 AA scan (axe-core) of the page, with the form in its
-// error state so error messages are checked too. Catches regressions such as
-// missing labels, low contrast or keyboard traps; manual checks are in README.
 test("has no automatically detectable WCAG 2.2 AA violations", async ({ page }) => {
   await page.goto("/phoenix-az");
   await page.getByRole("form", { name: "Talk to a solar expert" }).getByRole("button").click();

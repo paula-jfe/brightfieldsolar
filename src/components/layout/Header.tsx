@@ -1,3 +1,4 @@
+// Sticky header with desktop navigation and the mobile menu.
 "use client";
 
 import Link from "next/link";
@@ -13,18 +14,6 @@ const navLinks = [
   { label: "FAQs", href: "#faq" },
 ];
 
-/**
- * Sticky header with a 95% dark background + blur. Desktop (lg, 1024px+):
- * logo, nav links (hover = white text + yellow underline, the Figma "Nav
- * Link" hover state) and the primary CTA. Mobile and tablet: logo + menu
- * button, because the full nav doesn't fit next to the logo below 1024px; the open menu drops down
- * *over* the page (absolutely positioned under the header, so it never
- * pushes content down) with the same translucent background, and the header
- * row itself doesn't change colour (Figma "Menu=Open"). Client component only
- * for the open state, closing on link tap, Escape, or resizing to desktop.
- * On very short screens (a phone held sideways) it stops being sticky, so it
- * doesn't take a quarter of the height while reading.
- */
 export function Header({ city }: { city: CityData }) {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -34,8 +23,6 @@ export function Header({ city }: { city: CityData }) {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      // The menu becomes inert when it closes, so focus inside it would be
-      // lost; hand it back to the button that opened it.
       if (menuRef.current?.contains(document.activeElement)) toggleRef.current?.focus();
       setOpen(false);
     };
@@ -84,7 +71,6 @@ export function Header({ city }: { city: CityData }) {
           aria-label={open ? "Close menu" : "Open menu"}
           className="-mr-2.5 flex h-11 w-11 items-center justify-center rounded-full text-text-on-dark active:bg-white/12 lg:hidden"
         >
-          {/* Three bars that morph into an X (top/bottom rotate, middle fades). */}
           <span aria-hidden="true" className="relative block h-[19px] w-6">
             <span
               className={`absolute left-0 top-0 h-[3px] w-6 rounded-full bg-current transition-transform ${
@@ -105,8 +91,6 @@ export function Header({ city }: { city: CityData }) {
         </button>
       </Container>
 
-      {/* Always mounted so it can animate out as well as in; `inert` keeps
-          the hidden links out of the tab order and away from screen readers. */}
       <nav
         ref={menuRef}
         id="mobile-menu"

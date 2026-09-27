@@ -1,13 +1,8 @@
+// Final call to action: copy, phone link and the lead form.
 import type { CityData } from "@/data/types";
 import { Container } from "@/components/ui/Container";
 import { LeadForm } from "./LeadForm";
 
-/**
- * Final call to action: copy + phone on the left, the lead form (with its
- * validation, loading and submitted states — see LeadForm) on the right.
- * The brief allows the CTA to go nowhere, so there's no backend. The phone
- * number is a tel: link, because many visitors are on a phone.
- */
 export function FinalCta({ city }: { city: CityData }) {
   const tel = city.phone.replace(/[^\d+]/g, "");
   return (

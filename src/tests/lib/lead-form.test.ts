@@ -1,4 +1,5 @@
 // @vitest-environment node
+// Lead form validation rule tests.
 import { test } from "vitest";
 import assert from "node:assert/strict";
 import {

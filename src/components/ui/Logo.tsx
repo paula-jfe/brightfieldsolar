@@ -1,7 +1,4 @@
-/**
- * Brightfield logo: the sun-over-panels symbol vectorized in the Figma
- * file ("Brightfield Symbol (vector)", Brand DNA page) plus the wordmark.
- */
+// Brightfield Solar logo: sun symbol and wordmark.
 export function LogoMark({ className = "", color = "currentColor" }: { className?: string; color?: string }) {
   return (
     <svg viewBox="47 37 506 478" className={className} fill="none" aria-hidden="true">
@@ -22,14 +19,6 @@ export function LogoMark({ className = "", color = "currentColor" }: { className
   );
 }
 
-/**
- * Figma "Logo" component: yellow symbol + "Brightfield Solar" wordmark
- * (Hanken Grotesk ExtraBold 24/30, 10px gap). `tone` only changes the
- * wordmark colour; the symbol is always the brand yellow.
- * - size "md" (header): base size on mobile and tablet, 1.2× from lg up, as the
- *   desktop header instance in Figma is scaled to 120%.
- * - size "sm" (footer): base size everywhere.
- */
 export function Logo({ tone = "on-dark", size = "md" }: { tone?: "on-dark" | "on-light"; size?: "sm" | "md" }) {
   const textColor = tone === "on-dark" ? "text-text-on-dark" : "text-text-on-light";
   const large = size === "md";

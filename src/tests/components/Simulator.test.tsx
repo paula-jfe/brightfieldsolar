@@ -1,3 +1,4 @@
+// Simulator tests, including the brief's worked example clicked through the UI.
 import { describe, expect, test } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -6,8 +7,6 @@ import { getCityBySlug } from "@/data/cities";
 
 const phoenix = getCityBySlug("phoenix-az")!;
 
-// Profile cards are found by their accessible name, which is the full label
-// from the data file (the visible text is shortened on mobile).
 const profile = (label: RegExp) => screen.getByRole("button", { name: label });
 const billSlider = () => screen.getByRole("slider", { name: "Monthly bill" });
 const coverageSlider = () => screen.getByRole("slider", { name: /how much of your usage/i });
@@ -39,28 +38,20 @@ describe("Simulator", () => {
     expect(screen.queryByText(CAPPED_NOTE)).not.toBeInTheDocument();
   });
 
-  // The brief's worked example, clicked through the real UI. The calculator
-  // test checks the numbers; this checks the state rules that produce the
-  // inputs for each row (especially row 4, see README).
   test("reproduces the brief's worked example step by step", async () => {
     const user = userEvent.setup();
     render(<Simulator city={phoenix} />);
 
-    // 2. Select the pool + EV profile: bill becomes $430, coverage stays 80%.
     await user.click(profile(/pool and an ev/i));
     expect(billSlider()).toHaveValue("430");
     expect(coverageSlider()).toHaveValue("0.8");
     expectEstimate({ panels: "33 panels", cost: "$28,586", savings: "$347", payback: "6.9 years" });
 
-    // 3. Raise coverage to 100%: savings cap at the bill, $1.73 becomes a credit.
-    //    Coverage is not part of a profile, so the profile stays selected.
     setSlider(coverageSlider(), 1);
     expect(profile(/pool and an ev/i)).toHaveAttribute("aria-pressed", "true");
     expectEstimate({ panels: "41 panels", cost: "$35,516", savings: "$430", payback: "6.9 years" });
     expect(screen.getByText(CAPPED_NOTE)).toHaveTextContent("The extra $1.73/month becomes a utility credit");
 
-    // 4. Select the apartment profile: $90 bill AND coverage back to 80%.
-    //    The raw ask is 7 panels, so the 8-panel minimum applies.
     await user.click(profile(/apartment or small condo/i));
     expect(billSlider()).toHaveValue("90");
     expect(coverageSlider()).toHaveValue("0.8");
@@ -70,14 +61,12 @@ describe("Simulator", () => {
     expect(screen.getByText(MIN_PANELS_NOTE)).toBeInTheDocument();
     expect(screen.queryByText(CAPPED_NOTE)).not.toBeInTheDocument();
 
-    // 5. Lower the bill by hand to $60: no profile matches any more, both notes show.
     setSlider(billSlider(), 60);
     expect(screen.queryAllByRole("button", { pressed: true })).toHaveLength(0);
     expectEstimate({ panels: "8 panels", cost: "$6,930", savings: "$60", payback: "9.6 years" });
     expect(screen.getByText(MIN_PANELS_NOTE)).toBeInTheDocument();
     expect(screen.getByText(CAPPED_NOTE)).toBeInTheDocument();
 
-    // 6. Lower coverage to 50%: nothing changes, the minimum already binds.
     setSlider(coverageSlider(), 0.5);
     expectEstimate({ panels: "8 panels", cost: "$6,930", savings: "$60", payback: "9.6 years" });
   });
@@ -87,12 +76,10 @@ describe("Simulator", () => {
 
     const bar = screen.getByRole("img", { name: "$179 of your $220 bill covered by solar" });
     const [withSolar, savings] = Array.from(bar.children) as HTMLElement[];
-    // 179.01 / 220 = 81.37% saved, 18.63% still paid.
     expect(parseFloat(savings.style.width)).toBeCloseTo(81.37, 1);
     expect(parseFloat(withSolar.style.width)).toBeCloseTo(18.63, 1);
     expect(result().getByText("$41/mo with solar")).toBeInTheDocument();
 
-    // When savings are capped the whole bar is savings and nothing is left to pay.
     setSlider(billSlider(), 60);
     const capped = screen.getByRole("img", { name: "$60 of your $60 bill covered by solar" });
     expect((capped.children[1] as HTMLElement).style.width).toBe("100%");

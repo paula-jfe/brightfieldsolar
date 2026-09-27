@@ -1,19 +1,8 @@
+// Scroll-snap carousel with arrows on desktop and dots on mobile.
 "use client";
 
 import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
-/**
- * Figma "Carousel Header" + "Carousel Dots" + "Mobile Carousel". One real
- * scroll-snap row for both breakpoints:
- * - Mobile: swipe, with dots underneath that track the visible card and
- *   jump to a card when tapped.
- * - Desktop: fixed 400px cards (Figma width) with prev/next arrows next to
- *   the title (dots hidden, matching the Figma "Show dots = false" choice).
- *   Arrows enable themselves whenever the cards don't all fit — on a
- *   narrower window, or for a city with more crews/testimonials — and
- *   disable when there's nothing left to scroll. At 1440px Phoenix's three
- *   cards fit, so both render disabled, exactly as in the design.
- */
 export function Carousel({
   title,
   subtitle,
@@ -109,12 +98,6 @@ export function Carousel({
         </div>
       </div>
 
-      {/* Desktop centres the row when the cards fit (Figma); `safe` falls back
-          to start-aligned when they overflow, so the first card is never cut
-          off and the row still scrolls from its beginning.
-          When the cards overflow, the track itself takes keyboard focus so
-          arrow keys can scroll it (WCAG 2.1.1); the ring is inset because
-          the track runs edge to edge on mobile. */}
       <ul
         ref={trackRef}
         tabIndex={canPrev || canNext ? 0 : undefined}
@@ -142,8 +125,6 @@ export function Carousel({
               onClick={() => scrollToIndex(index)}
               aria-label={`Go to slide ${index + 1}`}
               aria-current={index === active}
-              // 8px dot inside a 24px-wide, 44px-tall tap target (WCAG 2.5.8),
-              // which also sets the 16px visual gap between dots.
               className="flex h-11 items-center justify-center px-2"
             >
               <span

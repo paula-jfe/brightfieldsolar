@@ -1,11 +1,8 @@
+// FAQ section.
 import type { CityData } from "@/data/types";
 import { Container } from "@/components/ui/Container";
 import { FaqList } from "./FaqList";
 
-/**
- * Figma "FAQ Item" list: one bordered card with dividers between items.
- * Questions and answers come from the city data file verbatim.
- */
 export function Faq({ city }: { city: CityData }) {
   return (
     <section id="faq" className="bg-bg-light py-14 md:py-20 lg:py-24">

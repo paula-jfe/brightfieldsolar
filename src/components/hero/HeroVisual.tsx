@@ -1,7 +1,6 @@
+// Hero scene (night to day) with the floating stat cards.
 import Image from "next/image";
 import type { CityData } from "@/data/types";
-// Same art for every city, so it's a static import from src/assets:
-// Next hashes, resizes and serves it as WebP/AVIF automatically.
 import houseDay from "@/assets/house-day.png";
 import houseNight from "@/assets/house-night.png";
 
@@ -9,19 +8,6 @@ const STARS: [number, number, number][] = [
   [8, 8, 3], [25, 16, 2], [37, 5, 3], [48, 23, 2], [60, 13, 3], [79, 6, 2], [89, 20, 3], [13, 31, 2], [71, 35, 2], [42, 37, 3],
 ];
 
-/**
- * Figma "HeroImg" + "Hero Stats". The scene plays night -> day once (sun
- * rises, moon sets, stars and the night photo fade out) and then stays on
- * day. The three stat cards sit on top as siblings of the scene — not
- * inside it — so their floating loop runs independently of the sky
- * transition (the same fix made in Figma). Pure CSS: no client JS.
- * prefers-reduced-motion jumps straight to the final day state.
- *
- * Sizes: a wide image on phones and tablets (capped at 640px), square from
- * lg. The stat cards are compact wherever the image is narrow (phones, and
- * lg where the square is only ~355px wide) and regular on tablets and xl+,
- * so they never overlap each other.
- */
 export function HeroVisual({ city }: { city: CityData }) {
   const stats = [
     { label: "Installations", value: city.installsCompleted.toLocaleString("en-US"), speed: "float-slow", pos: "left-[25%] top-[78%] max-[359px]:left-[8%] lg:left-[4%] lg:top-[40%]" },
@@ -32,7 +18,6 @@ export function HeroVisual({ city }: { city: CityData }) {
   return (
     <div className="relative aspect-[350/231] w-full md:max-w-[640px] lg:mx-auto lg:aspect-square lg:max-w-[424px]">
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden rounded-[var(--radius-card)]">
-        {/* Day sky, revealed as the night layers fade out. */}
         <div className="absolute inset-0 bg-gradient-to-b from-seagull-400 to-seagull-100" />
         <div className="hero-sun absolute left-[10%] top-[6%] aspect-square w-[15%] rounded-full bg-accent-sun shadow-[0_0_48px_12px_rgba(252,219,4,0.55)] lg:left-[44%] lg:w-[16%]" />
         <Image
@@ -43,7 +28,6 @@ export function HeroVisual({ city }: { city: CityData }) {
           className="absolute inset-x-0 bottom-0 h-auto w-full lg:origin-bottom lg:scale-[1.35]"
         />
 
-        {/* Night layers on top, fading out. */}
         <div className="hero-night absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-b from-mirage-950 to-mirage-700" />
           {STARS.map(([x, y, s]) => (

@@ -1,21 +1,4 @@
-/**
- * Lead form validation. Pure functions (no React), so the rules are unit
- * tested in src/tests/lib/lead-form.test.ts and shared by the form.
- *
- * Rules (US audience, per the brief):
- * - name: 2–60 characters, letters only plus spaces, apostrophes, hyphens and
- *   periods (so "Mary-Jane O'Neil Jr." passes, "J4ne" or "@@" don't), with at
- *   least two letters.
- * - email: RFC-style local part and a real-looking domain (labels of letters,
- *   digits and hyphens, a 2+ letter TLD), no consecutive or edge dots, and the
- *   usual 64/254 length limits. Common domain typos get a non-blocking hint.
- * - phone: a US (NANP) number — 10 digits, or 11 starting with 1; area code
- *   and exchange can't start with 0 or 1; only phone characters allowed; not
- *   the same digit repeated. 555 numbers are allowed on purpose: they're the
- *   fictional numbers used across this page.
- * - consent: required.
- */
-
+// Validation rules and input helpers for the lead form.
 export type LeadValues = { name: string; email: string; phone: string; consent: boolean };
 export type LeadField = keyof LeadValues;
 export type LeadErrors = Partial<Record<LeadField, string>>;
@@ -78,7 +61,6 @@ export function validateLead(values: LeadValues): LeadErrors {
   return errors;
 }
 
-/** Formats digits as the person types: "6025550100" -> "(602) 555-0100". */
 export function formatPhone(raw: string): string {
   let digits = raw.replace(/\D/g, "");
   const country = digits.length > 10 && digits.startsWith("1") ? "1 " : "";
@@ -101,10 +83,6 @@ function editDistance(a: string, b: string): number {
   return dp[a.length][b.length];
 }
 
-/**
- * Non-blocking "Did you mean …?" for likely typos in popular email domains
- * (gmial.com, hotmal.com, yahoo.con). Returns the corrected address or null.
- */
 export function suggestEmail(raw: string): string | null {
   const email = raw.trim().toLowerCase();
   const at = email.lastIndexOf("@");

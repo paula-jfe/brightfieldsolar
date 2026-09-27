@@ -1,12 +1,6 @@
+// Labeled range slider used for the bill and coverage inputs.
 import { useId, type CSSProperties } from "react";
 
-/**
- * Figma "Bill Slider" / "Coverage Slider": label on the left, current value
- * in the brand orange on the right, a 10px track with a dark fill and a
- * 24px dark knob, and the min/max labels underneath. Visual styling lives
- * in the `.range` rules in globals.css; the fill amount is passed in as the
- * `--fill` CSS variable (WebKit has no native "progress" pseudo-element).
- */
 export function RangeSlider({
   label,
   valueLabel,

@@ -1,4 +1,5 @@
 // @vitest-environment node
+// Formatting helper tests.
 import { test } from "vitest";
 import assert from "node:assert/strict";
 import {

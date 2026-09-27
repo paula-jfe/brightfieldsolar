@@ -1,18 +1,8 @@
+// Household profile cards that fill in the typical bill.
 import type { HouseholdProfile } from "@/data/types";
 import { formatCurrency } from "@/lib/format";
 import { ProfileIcon } from "./ProfileIcon";
 
-/**
- * Figma "Profile Option" cards. Selecting one is a shortcut: it fills in the
- * profile's typical bill (see Simulator). Desktop shows the full label from
- * the data file plus an illustrative icon; mobile shows `shortLabel` (when
- * the data provides one) and no icon, because the full labels wrap to three
- * lines in a half-width card at 390px. The icon is also hidden from 1024 to
- * 1279px, where the two-column simulator leaves each card only ~200px wide.
- *
- * No aria-label: the button's accessible name is its visible text (label +
- * typical bill), so voice-control users can say what they see (WCAG 2.5.3).
- */
 export function ProfileSelector({
   profiles,
   selectedIndex,

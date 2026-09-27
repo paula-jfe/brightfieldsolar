@@ -1,11 +1,7 @@
+// How it works section: three installation steps.
 import type { CityData } from "@/data/types";
 import { Container } from "@/components/ui/Container";
 
-/**
- * Three steps, per the brief. Step 2 pulls the permit time from the city
- * data (avgPermitDays), so the full timeline reads in the same order as the
- * FAQ answer: permit -> one-day install -> utility interconnection.
- */
 export function HowItWorks({ city }: { city: CityData }) {
   const steps = [
     {
