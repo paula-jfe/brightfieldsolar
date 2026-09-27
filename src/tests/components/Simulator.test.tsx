@@ -1,9 +1,16 @@
 // Simulator tests, including the brief's worked example clicked through the UI.
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Simulator } from "@/components/simulator/Simulator";
 import { getCityBySlug } from "@/data/cities";
+import { track } from "@/lib/analytics";
+
+vi.mock("@/lib/analytics", () => ({ track: vi.fn() }));
+
+beforeEach(() => {
+  vi.mocked(track).mockClear();
+});
 
 const phoenix = getCityBySlug("phoenix-az")!;
 
@@ -89,6 +96,39 @@ describe("Simulator", () => {
     expect(profile(/pool and an ev/i)).toHaveAttribute("aria-pressed", "true");
     expect(house).toHaveAttribute("aria-pressed", "false");
     expect(coverageSlider()).toHaveValue("1");
+  });
+
+  test("records one simulator_started event, on the first interaction only", () => {
+    render(<Simulator city={phoenix} />);
+    expect(track).not.toHaveBeenCalled();
+
+    setSlider(billSlider(), 300);
+    setSlider(billSlider(), 310);
+    setSlider(coverageSlider(), 0.9);
+
+    expect(track).toHaveBeenCalledTimes(1);
+    expect(track).toHaveBeenCalledWith("simulator_started", {
+      city: "Phoenix",
+      monthly_bill: 300,
+      coverage_percent: 80,
+      profile: undefined,
+    });
+  });
+
+  test("a profile click as the first interaction records which profile was chosen", async () => {
+    const user = userEvent.setup();
+    render(<Simulator city={phoenix} />);
+
+    await user.click(profile(/pool and an ev/i));
+    await user.click(profile(/apartment or small condo/i));
+
+    expect(track).toHaveBeenCalledTimes(1);
+    expect(track).toHaveBeenCalledWith("simulator_started", {
+      city: "Phoenix",
+      monthly_bill: 430,
+      coverage_percent: 80,
+      profile: "House with a pool and an EV in the garage",
+    });
   });
 
   test("the savings bar splits the bill into what you still pay and what solar saves", () => {

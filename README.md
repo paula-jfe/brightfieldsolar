@@ -25,10 +25,11 @@ Brightfield Solar is a fictional company created for this exercise. Nothing on t
 6. [Assumptions](#assumptions)
 7. [Tests and what they protect](#tests-and-what-they-protect)
 8. [CI and deployment](#ci-and-deployment)
-9. [Accessibility](#accessibility)
-10. [Security](#security)
-11. [How AI was used and verified](#how-ai-was-used-and-verified)
-12. [What is pending](#what-is-pending)
+9. [Analytics](#analytics)
+10. [Accessibility](#accessibility)
+11. [Security](#security)
+12. [How AI was used and verified](#how-ai-was-used-and-verified)
+13. [What is pending](#what-is-pending)
 
 ---
 
@@ -341,6 +342,23 @@ Async Server Components (the page itself) are covered by E2E rather than unit te
 
 ---
 
+## Analytics
+
+The campaign team needs to know on Mondays which ads generated savings simulations. The page sends three events to Google Analytics 4, in production only:
+
+| Event | When | Parameters |
+|---|---|---|
+| `simulator_started` | the first time a visitor moves a slider or picks a profile (once per visit) | city, monthly bill, coverage %, profile (when the first action is a profile) |
+| `lead_submitted` | the contact request is sent successfully | city |
+| `phone_clicked` | the phone number is tapped | city |
+
+- **Campaign attribution needs no extra code.** GA4 reads the `utm_*` parameters (and `gclid` for Google Ads) from the landing URL and attributes every event of that visit to the campaign, so "simulations per campaign" is a standard GA4 report.
+- **No personal data is sent.** The events are typed in `src/lib/analytics.ts`, so a new event or parameter has to be added there on purpose, and name, email and phone cannot be sent by mistake.
+- **Only production is measured.** GA4 loads only when `NEXT_PUBLIC_GA_ID` is set, which is configured for the Vercel production environment only. Local development, tests, CI and preview deployments send nothing.
+- **Why GA4 and `gtag.js`:** it is free and the standard tool for campaign reporting. It is loaded through the official `@next/third-parties` package, after the page becomes interactive.
+
+---
+
 ## Accessibility
 
 Target: **WCAG 2.2 AA**. Checked with axe-core in every page state, computed contrast ratios, a keyboard walk and zoom/reflow at 320px. There are currently **zero axe violations** on mobile, tablet and desktop.
@@ -364,7 +382,7 @@ Known trade-offs, chosen deliberately:
 
 ## Security
 
-The attack surface is small: a static page with no backend, authentication, database or third-party scripts, and a form that never sends data anywhere. Checks performed:
+The attack surface is small: a static page with no backend, authentication or database, a form that never sends data anywhere, and one third-party script, Google Analytics, loaded in production only (see [Analytics](#analytics)). Checks performed:
 - **Dependencies:** `npm audit` reports 0 vulnerabilities, for production and development dependencies.
 - **Secrets:** no secrets in the code or git history, and no `.env` files.
 - **Code:** no `dangerouslySetInnerHTML`, `eval` or `innerHTML`. React escapes all text, and query parameters are never reflected into the page.
@@ -372,7 +390,7 @@ The attack surface is small: a static page with no backend, authentication, data
 - **Build:** no production source maps.
 
 **HTTP headers**, set in [`next.config.ts`](next.config.ts):
-- `Content-Security-Policy`: the "without nonces" variant from the Next.js CSP guide, since the pages are static and nonces would force dynamic rendering. Scripts, styles, images and fonts come from the site's own origin only, and `frame-ancestors 'none'` blocks clickjacking.
+- `Content-Security-Policy`: the "without nonces" variant from the Next.js CSP guide, since the pages are static and nonces would force dynamic rendering. Scripts, styles, images and fonts come from the site's own origin; the only exceptions are the Google Analytics domains (`*.googletagmanager.com`, `*.google-analytics.com`, `*.analytics.google.com`) that GA4 needs to load and send events. `frame-ancestors 'none'` blocks clickjacking.
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy`, which turns off camera, microphone, geolocation, payment and USB
@@ -443,7 +461,7 @@ I reviewed the deployed page myself and found three problems. For each one I ask
 
 - **Hover states did not match the design.** The primary button only darkened slightly on hover, while Figma had it turn orange with white text. Buttons showed the default arrow cursor, because Tailwind v4 no longer sets `cursor: pointer` on buttons. The FAQ hover was practically invisible, and form fields had no hover at all. I asked for an audit of every clickable element. It showed that the orange in Figma (Trinidad/600) with white text is only 3.8:1, so I chose the darker Trinidad/700 (5.3:1). I then had the missing Hover and Focus variants added to the Figma components, plus a "States & interactions" frame that documents them, and only then the code: a pointer cursor on everything clickable, a small change on hover for each control, 150 ms transitions, and hover only on devices with a mouse.
 - **The carousel arrows' hover was too subtle.** White to light grey on a dark background was barely visible. I compared simulations on the real page (a darker grey, yellow, an inverted dark button and three soft glows), each showing the inactive, active and hover states side by side. I rejected yellow as too loud and the inverted version because it looked like a different state, and chose a soft white glow: clearly visible, and impossible to confuse with the yellow focus ring.
-- **The household profile lost its selection.** After moving the bill slider away from a profile's bill and back, the profile stayed unselected. The cause: the code stored which button had been clicked instead of comparing the bill with the profiles. I weighed turning the profiles into one-off action buttons against deriving the selection from the bill, and chose the second, so the screen can never contradict itself (see [Decision 1](#1-what-happens-to-coverage-when-a-household-profile-is-selected)). A component test covers moving away and back, and the data contract now requires every profile to have a different bill. While discussing it I noticed that a link sent to a partner does not carry the simulation, which became item 2 in [What is pending](#what-is-pending).
+- **The household profile lost its selection.** After moving the bill slider away from a profile's bill and back, the profile stayed unselected. The cause: the code stored which button had been clicked instead of comparing the bill with the profiles. I weighed turning the profiles into one-off action buttons against deriving the selection from the bill, and chose the second, so the screen can never contradict itself (see [Decision 1](#1-what-happens-to-coverage-when-a-household-profile-is-selected)). A component test covers moving away and back, and the data contract now requires every profile to have a different bill. While discussing it I noticed that a link sent to a partner does not carry the simulation, which became item 4 in [What is pending](#what-is-pending).
 
 ### How the output was verified
 - **The brief's worked example is an automated test,** at the formula level and clicked through the UI. When a behaviour mattered, I checked the test would fail without it; for example, removing the coverage reset makes the simulator test fail at row 4.
@@ -457,15 +475,13 @@ I reviewed the deployed page myself and found three problems. For each one I ask
 
 Ordered by impact on the business goals in the brief:
 
-1. **Campaign attribution.** On Mondays the campaign team needs to know which ads generated simulations. The page does not track anything yet. Next step:
-   - capture UTM parameters on landing
-   - fire an analytics event the first time a visitor interacts with the simulator, and on lead submission, carrying those UTMs and the city slug
-   
-   This would work with GA4, Segment or similar, behind a consent banner if required.
-2. **A shareable estimate link.** Most visitors send the page to someone they decide with, but the link opens with the default $220 and 80%, not their simulation. Next step: keep the bill and coverage in the URL (for example `/phoenix-az?bill=430&coverage=100`), validate them against the slider ranges, add a "Share my estimate" button, and keep `/phoenix-az` as the canonical URL so search engines still see one page per city.
-3. **Richer share preview.** The link is often forwarded to a partner. There is per-city Open Graph text, but no share image yet. A generated `opengraph-image` with the city name, rating and install count would make the preview look trustworthy.
-4. **Structured data for search and AI assistants.** Add JSON-LD `FAQPage` for the FAQ, and `LocalBusiness`/`Service` with the phone and rating, generated from the data file. Also add a `sitemap.xml` and `robots.txt` that list every city.
-5. **Unused data fields.** `utilityName`, `metroArea` and `popularNeighborhoods` could feed local-SEO copy, for example "serving Arcadia, Ahwatukee…" or "credits from Arizona Public Service".
-6. **A real lead endpoint** with server-side validation, rate limiting and spam protection (see [Security](#security)).
-7. **More cities.** The template and the data contract are ready. A second real city file would be the true test of the "one template, 120 cities" goal.
-8. **Minor cleanup.** A few component options are kept to match Figma but unused on this page: the large `Loader`, the light `Logo` tone, and a `Button` component next to `LinkButton`.
+1. **Finished simulations.** `simulator_started` counts who started. A second event sent when the visitor stops adjusting (debounced) would show the bills and coverage people actually settle on, per campaign.
+2. **Google Tag Manager.** Campaigns change every week; with GTM the marketing team could add or change tags (for example an ad platform pixel) without a deploy. The events already go through the `dataLayer`, so the switch is small.
+3. **Consent banner.** Needed before measuring visitors from the EU or UK.
+4. **A shareable estimate link.** Most visitors send the page to someone they decide with, but the link opens with the default $220 and 80%, not their simulation. Next step: keep the bill and coverage in the URL (for example `/phoenix-az?bill=430&coverage=100`), validate them against the slider ranges, add a "Share my estimate" button, and keep `/phoenix-az` as the canonical URL so search engines still see one page per city.
+5. **Richer share preview.** The link is often forwarded to a partner. There is per-city Open Graph text, but no share image yet. A generated `opengraph-image` with the city name, rating and install count would make the preview look trustworthy.
+6. **Structured data for search and AI assistants.** Add JSON-LD `FAQPage` for the FAQ, and `LocalBusiness`/`Service` with the phone and rating, generated from the data file. Also add a `sitemap.xml` and `robots.txt` that list every city.
+7. **Unused data fields.** `utilityName`, `metroArea` and `popularNeighborhoods` could feed local-SEO copy, for example "serving Arcadia, Ahwatukee…" or "credits from Arizona Public Service".
+8. **A real lead endpoint** with server-side validation, rate limiting and spam protection (see [Security](#security)).
+9. **More cities.** The template and the data contract are ready. A second real city file would be the true test of the "one template, 120 cities" goal.
+10. **Minor cleanup.** A few component options are kept to match Figma but unused on this page: the large `Loader`, the light `Logo` tone, and a `Button` component next to `LinkButton`.

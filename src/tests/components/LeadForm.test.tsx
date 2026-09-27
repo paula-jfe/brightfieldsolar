@@ -3,6 +3,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LeadForm } from "@/components/final-cta/LeadForm";
+import { track } from "@/lib/analytics";
+
+vi.mock("@/lib/analytics", () => ({ track: vi.fn() }));
 
 const nameInput = () => screen.getByRole("textbox", { name: /^name/i });
 const emailInput = () => screen.getByRole("textbox", { name: /^email/i });
@@ -20,6 +23,7 @@ function setup() {
 
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
+  vi.mocked(track).mockClear();
 });
 
 afterEach(() => {
@@ -128,6 +132,23 @@ describe("LeadForm", () => {
     expect(submitButton()).toHaveTextContent("Talk to a solar expert");
     expect(screen.queryByText("Enter your name.")).not.toBeInTheDocument();
     expect(nameInput()).toHaveFocus();
+  });
+
+  test("records lead_submitted only when a request is actually sent", async () => {
+    const user = setup();
+    await user.click(submitButton());
+    expect(track).not.toHaveBeenCalled();
+
+    await user.type(nameInput(), "Jane Smith");
+    await user.type(emailInput(), "jane@example.com");
+    await user.type(phoneInput(), "6025550100");
+    await user.click(consentBox());
+    await user.click(submitButton());
+    expect(track).not.toHaveBeenCalled();
+
+    await act(() => vi.advanceTimersByTimeAsync(1200));
+    expect(track).toHaveBeenCalledTimes(1);
+    expect(track).toHaveBeenCalledWith("lead_submitted", { city: "Phoenix" });
   });
 
   test("announces the sending state to screen readers", async () => {
