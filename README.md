@@ -144,8 +144,9 @@ src/
     format.ts            currency, percent, years, panel-count formatting
     lead-form.ts         form validation rules
     public-asset.ts      checks an optional image exists before rendering it
-  tests/                 unit, component and data-contract tests
-e2e/                     Playwright end-to-end tests
+  tests/
+    lib/, data/, components/   unit, component and data-contract tests (Vitest)
+    e2e/                       end-to-end tests (Playwright)
 ```
 
 **Stack:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4. No UI library and no runtime dependencies beyond Next and React.
