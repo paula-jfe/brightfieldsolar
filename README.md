@@ -4,9 +4,11 @@
 
 | | |
 |---|---|
-| Time spent | _TODO: fill in_ |
+| Time spent | Delivered within the 7-day deadline; I used the extra time for the tablet layout, tests and brand motion. About 5 days, Wednesday to Sunday: at least 4 hours a day, and more than 10 hours on some days. Wednesday: low-fidelity sketches (mobile and desktop). Thursday: design in Figma. Friday: code. Saturday: brand motion. Sunday: final adjustments, links and deploy. The video was recorded afterwards. |
 | Live page | _TODO: add URL_ |
-| Design (Figma) | https://www.figma.com/design/ZjORunM647LzvOgmrM5Y6o |
+| Design (Figma) | [BrightfieldSolar – Case 09](https://www.figma.com/design/jczaaU4dilJS2Qy7CxCtKs/BrightfieldSolar---Case-09) (view-only) |
+| Case study (Behance) | [Brightfield Solar](https://www.behance.net/gallery/256289617/Brightfield-Solar) |
+| Brand motion (YouTube) | [Brightfield Solar motion](https://youtu.be/w6442_yHNVA) |
 | Video walkthrough | _TODO: add URL_ |
 | Commit to evaluate | _TODO: add full hash_ |
 
@@ -374,27 +376,63 @@ The attack surface is small: a static page with no backend, authentication, data
 
 ## How AI was used and verified
 
-I used **Claude (Anthropic)** throughout, as a pair designer and engineer. I made the design and product decisions and reviewed every change before it landed. Claude edited the Figma file through the Figma MCP server and edited the code in a local copy of the repository.
+I used **Claude (Anthropic)** as a pair designer and engineer. Claude edited the Figma file through the Figma MCP server and edited code in a copy of the repository. I made the product and design decisions, reviewed every change, and ran installs, commits and the deploy myself.
 
-**How it helped**
-- **Design:** turning my hand-drawn low-fidelity sketches into Figma components and screens. That included the variable collections and tokens, component variants (Profile Option, Solar Estimate states, Lead Form states, Floating Stat, Carousel Dots) and prototype interactions.
-- **Code:** implementing the Figma design in Next.js, the calculator and the form validation, and writing the tests.
-- **Audits:** reviews against the brief, an accessibility audit (axe-core plus manual checks), a security review and a dead-code sweep.
+### How I worked with it
+- **Nothing changed without my approval.** Design changes were shown to me first as before/after screenshots or simulations, and only applied after my ok.
+- **Design first, then code.** Visual changes (colours, borders, states, the tablet layout) were made in Figma first and only then implemented, so the file stays the source of truth.
+- **No dependency or download without my consent.** I install packages myself, and any change to `package.json` goes through me.
+- **I asked for reasoning, not just output.** For stack choices (testing tools, fonts) I asked what the market standard is and why before deciding.
 
-**What I kept, changed or rejected (examples)**
-- **Navy for the selected state:** Claude proposed it to fix contrast. I rejected it as too heavy and we settled on a deeper shade of the brand blue that still passes ([Decision 2](#2-the-accent-blue-failed-contrast-and-what-replaced-it)).
-- **Floating stat cards:** Claude proposed stopping them after 5 seconds for strict WCAG conformance. I kept them infinite but slower, and documented the trade-off. I also tried a smaller amplitude and reverted it because the motion became barely visible.
-- **Form validation:** I found the first version too weak and asked for strict rules. I then corrected its behaviour: no error for tabbing through an empty field, and the consent error only on submit.
-- **Confirmation layout:** I compared left-aligned, icon-beside-title and centred versions from real screenshots before choosing the centred one.
-- **Tests:** I asked to remove an E2E assertion that checked element positions, because the test should check that things are on screen, not pixel layout.
-- **Figma:** I rejected text variants per phrase in favour of component text properties. I also corrected the implementation where it drifted from the Figma file.
+### My decisions
+Claude proposed options and implemented them; these calls were mine.
 
-**How the output was verified**
-- **The brief's worked example is an automated test,** both at the formula level and clicked through the UI. When a behaviour mattered, I checked the test would fail without it; for example, removing the coverage reset makes the simulator test fail at row 4.
-- **Every visual change was checked in a real browser (Playwright/Chromium)** at mobile, tablet and desktop sizes, compared against the Figma frames, and proposed design changes were shown as before/after screenshots before being applied.
-- **Accessibility:** axe-core, computed contrast ratios and keyboard walks. Security: `npm audit`, header inspection and code scans.
-- **Lint, type-check, all unit, component and E2E tests,** and a production build were run after each change.
-- **No dependency was added without my approval,** and I install packages myself.
+**Architecture and scope**
+- **Project structure:** the folder layout, with all tests inside `src/tests` (`lib`, `data`, `components`, `e2e`) instead of scattered or at the root.
+- **Testing strategy:** unit tests for the calculator and form rules, component tests for the interactive parts, and E2E tests for the full flow and accessibility. I chose Vitest + React Testing Library + Playwright after comparing them with the Jest setup I used on client-side React apps.
+- **Breakpoints:** mobile first, tablet at 768 px, the desktop layout at 1024 px and the wider hero at 1280 px, all through Tailwind so type, radius and spacing scale with the layout.
+- **Security level:** which protections the page needed (security headers, a Content Security Policy, no framework fingerprinting). I reviewed and approved each fix from the security audit.
+- **Accessibility target:** WCAG 2.2 AA, checked with automated scans and by hand.
+- **Fonts:** loaded through `next/font/google` rather than files committed to the repo.
+
+**Design and behaviour**
+- **Brand identity:** the logo, the colour palette and the main brand colours.
+- The low-fidelity sketches the design started from.
+- The accessible accent shade (Seagull/500), which I wired in Figma myself, and the control border colour.
+- A dedicated Tablet page in Figma, with tablet variants for every component except the sliders.
+- Mobile-only left alignment for the carousels.
+- Speed and amplitude of the floating stat cards.
+- When form errors appear (never for just tabbing through; consent only on submit), and a centred confirmation.
+
+**Refinement**
+I sent back many rounds of adjustments: colours, contrast, animation timing, validation behaviour, the confirmation layout, test assertions, code comments and this README. I also ran installs, the E2E setup on my machine, commits and the deploy myself.
+
+### Proposals I changed or rejected
+| Claude proposed | My decision | Why |
+|---|---|---|
+| Navy for selected and focus states, to fix contrast | Rejected. I chose a deeper shade of the brand blue (#2599C3) | Navy felt too heavy for the brand; the deeper blue still passes ([Decision 2](#2-the-accent-blue-failed-contrast-and-what-replaced-it)) |
+| Black borders on form controls | Rejected. We used #76889F | Meets the 3:1 non-text contrast without looking harsh |
+| Stopping the floating stat cards after 5 s | Kept them infinite but slower (5/6/7 s cycles). A smaller amplitude was tried and reverted | The motion is part of the design; reverted because it became barely visible. Trade-off documented |
+| First form validation | Asked for stricter rules and corrected the behaviour | No error for tabbing through an empty field; the consent error appears only on submit, even if the other fields are empty |
+| Confirmation message with the icon on the left | Centred, stacked layout | Compared three versions from real screenshots; it reads as a modal |
+| Tablet variants for every component | All except the sliders | The sliders already adapt; extra variants would only add maintenance |
+| E2E assertions on element positions | Removed | Tests should check that things are on screen and work, not pixel layout |
+| Font files bundled in the repository | Switched to `next/font/google` | Fonts are fetched at build time from Google and served from this site, with a known source |
+| Explanatory code comments | Reduced to a one-line header per file | Comments should say what a file is for, not narrate the code |
+
+I also asked for the audits myself: a responsive review (type scale, radius and spacing through Tailwind breakpoints), an accessibility audit, a security review and a dead-code sweep. I approved each fix individually.
+
+### Where the AI got it wrong, and how it was caught
+- **Installed packages and downloaded font files without asking.** I stopped it and set the consent rule above. The font files were checked against the official packages before being replaced.
+- **Figma:** new variants came out squeezed inside a fixed-height component set, cloned tablet components lost their property links, and a tablet frame kept a 390 px max width. I spotted these in review; they were fixed and rechecked with screenshots.
+- **Test tooling:** a `SLOWMO` variable was documented but not wired into the Playwright config. I noticed nothing changed when running it.
+- **Copy:** the profile label "Apartment or condo" did not match the design; corrected.
+
+### How the output was verified
+- **The brief's worked example is an automated test,** at the formula level and clicked through the UI. When a behaviour mattered, I checked the test would fail without it; for example, removing the coverage reset makes the simulator test fail at row 4.
+- **Every visual change was checked in a real browser (Playwright/Chromium)** at mobile, tablet and desktop sizes, and compared against the Figma frames.
+- **Accessibility:** axe-core, computed contrast ratios and keyboard walks. **Security:** `npm audit`, header inspection and code scans.
+- **Lint, type-check, the unit, component and E2E tests, and a production build** were run after each change, and I re-ran the tests on my own machine.
 
 ---
 
