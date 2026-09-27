@@ -3,6 +3,7 @@
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Loader } from "@/components/ui/Loader";
+import { track } from "@/lib/analytics";
 import {
   EMAIL_MAX,
   NAME_MAX,
@@ -46,6 +47,7 @@ export function LeadForm({ city }: { city: string }) {
       refs.current.name?.focus();
     }
     if (status === "success") {
+      track("lead_submitted", { city });
       successHeading.current?.focus();
       const t = setTimeout(() => {
         refocusForm.current = successHeading.current?.contains(document.activeElement) ?? false;
@@ -56,7 +58,7 @@ export function LeadForm({ city }: { city: string }) {
       }, CONFIRMATION_MS);
       return () => clearTimeout(t);
     }
-  }, [status]);
+  }, [status, city]);
 
   function visibleErrors(next: Values, touchedNow: Partial<Record<Field, boolean>>): Errors {
     const all = validateLead(next);

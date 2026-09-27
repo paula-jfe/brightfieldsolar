@@ -2,9 +2,9 @@
 import type { CityData } from "@/data/types";
 import { Container } from "@/components/ui/Container";
 import { LeadForm } from "./LeadForm";
+import { PhoneLink } from "./PhoneLink";
 
 export function FinalCta({ city }: { city: CityData }) {
-  const tel = city.phone.replace(/[^\d+]/g, "");
   return (
     <section id="contact" className="bg-bg-light py-14 md:py-20 lg:py-24">
       <Container className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,587fr)_minmax(0,653fr)] lg:gap-[72px]">
@@ -18,9 +18,7 @@ export function FinalCta({ city }: { city: CityData }) {
           </p>
           <p className="flex flex-wrap items-baseline gap-x-1.5 leading-6">
             <span className="text-text-on-light-muted">Prefer to call?</span>
-            <a href={`tel:${tel}`} className="text-lg font-semibold text-text-on-light underline-offset-4 hover:underline">
-              {city.phone}
-            </a>
+            <PhoneLink phone={city.phone} city={city.city} />
           </p>
         </div>
 
