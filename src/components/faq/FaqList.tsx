@@ -32,7 +32,7 @@ export function FaqList({ entries }: { entries: FaqEntry[] }) {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => toggle(index)}
-                className="flex w-full items-center justify-between gap-4 p-6 text-left font-semibold leading-6 transition-colors hover:bg-bg-light focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-sky"
+                className="flex w-full items-center justify-between gap-4 p-6 text-left font-semibold leading-6 transition-colors duration-150 hover:bg-bg-light-muted focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-sky"
               >
                 {entry.q}
                 <span aria-hidden="true" className="relative h-5 w-5 shrink-0">

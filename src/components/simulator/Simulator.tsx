@@ -23,16 +23,11 @@ import { SimulatorResult } from "./SimulatorResult";
 const INITIAL_BILL = 220;
 
 export function Simulator({ city }: { city: CityData }) {
-  const initialProfileIndex = useMemo(
-    () => city.householdProfiles.findIndex((profile) => profile.typicalBill === INITIAL_BILL),
-    [city]
-  );
-
   const [monthlyBill, setMonthlyBill] = useState(INITIAL_BILL);
   const [coverage, setCoverage] = useState(DEFAULT_COVERAGE);
-  const [selectedProfileIndex, setSelectedProfileIndex] = useState<number | null>(
-    initialProfileIndex >= 0 ? initialProfileIndex : null
-  );
+
+  const matchingProfileIndex = city.householdProfiles.findIndex((profile) => profile.typicalBill === monthlyBill);
+  const selectedProfileIndex = matchingProfileIndex >= 0 ? matchingProfileIndex : null;
 
   const result = useMemo(
     () => calculateSolarEstimate(city, { monthlyBill, coverage }),
@@ -40,19 +35,8 @@ export function Simulator({ city }: { city: CityData }) {
   );
 
   function handleSelectProfile(index: number) {
-    const profile = city.householdProfiles[index];
-    setMonthlyBill(profile.typicalBill);
+    setMonthlyBill(city.householdProfiles[index].typicalBill);
     setCoverage(DEFAULT_COVERAGE);
-    setSelectedProfileIndex(index);
-  }
-
-  function handleBillChange(value: number) {
-    setMonthlyBill(value);
-    setSelectedProfileIndex(null);
-  }
-
-  function handleCoverageChange(value: number) {
-    setCoverage(value);
   }
 
   return (
@@ -85,7 +69,7 @@ export function Simulator({ city }: { city: CityData }) {
               max={BILL_MAX}
               step={BILL_STEP}
               value={monthlyBill}
-              onChange={handleBillChange}
+              onChange={setMonthlyBill}
             />
             <RangeSlider
               label="How much of your usage do you want to cover?"
@@ -96,7 +80,7 @@ export function Simulator({ city }: { city: CityData }) {
               max={COVERAGE_MAX}
               step={COVERAGE_STEP}
               value={coverage}
-              onChange={handleCoverageChange}
+              onChange={setCoverage}
             />
           </div>
 

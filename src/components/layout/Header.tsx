@@ -50,7 +50,7 @@ export function Header({ city }: { city: CityData }) {
               <a
                 key={link.href}
                 href={link.href}
-                className="group relative py-1 text-text-on-dark-muted transition-colors hover:text-text-on-dark"
+                className="group relative py-1 text-text-on-dark-muted transition-colors duration-150 hover:text-text-on-dark"
               >
                 {link.label}
                 <span className="absolute inset-x-0 -bottom-0.5 h-0.5 origin-left scale-x-0 rounded-full bg-accent-sun transition-transform group-hover:scale-x-100" />

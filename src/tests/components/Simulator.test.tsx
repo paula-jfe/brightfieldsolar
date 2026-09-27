@@ -71,6 +71,26 @@ describe("Simulator", () => {
     expectEstimate({ panels: "8 panels", cost: "$6,930", savings: "$60", payback: "9.6 years" });
   });
 
+  test("the selected profile follows the bill: it clears when the bill moves away and returns with it", () => {
+    render(<Simulator city={phoenix} />);
+    const house = profile(/three-bedroom house, no pool/i);
+
+    setSlider(billSlider(), 230);
+    expect(screen.queryAllByRole("button", { pressed: true })).toHaveLength(0);
+
+    setSlider(billSlider(), 220);
+    expect(house).toHaveAttribute("aria-pressed", "true");
+
+    setSlider(coverageSlider(), 1);
+    expect(house).toHaveAttribute("aria-pressed", "true");
+    expect(coverageSlider()).toHaveValue("1");
+
+    setSlider(billSlider(), 430);
+    expect(profile(/pool and an ev/i)).toHaveAttribute("aria-pressed", "true");
+    expect(house).toHaveAttribute("aria-pressed", "false");
+    expect(coverageSlider()).toHaveValue("1");
+  });
+
   test("the savings bar splits the bill into what you still pay and what solar saves", () => {
     render(<Simulator city={phoenix} />);
 

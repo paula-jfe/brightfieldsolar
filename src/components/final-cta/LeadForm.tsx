@@ -22,8 +22,8 @@ const CONFIRMATION_MS = 7000;
 const FIELD_ORDER: Field[] = ["name", "email", "phone", "consent"];
 
 const inputBase =
-  "mt-1.5 h-12 w-full rounded-[var(--radius-inner)] bg-bg-card px-4 text-base font-normal text-text-on-light ring-inset placeholder:text-text-on-light-muted/85 transition-[box-shadow] focus:outline-none lg:h-10";
-const inputOk = "ring-1 ring-border-control focus:ring-2 focus:ring-accent-sky";
+  "mt-1.5 h-12 w-full rounded-[var(--radius-inner)] bg-bg-card px-4 text-base font-normal text-text-on-light ring-inset placeholder:text-text-on-light-muted/85 transition-[box-shadow] duration-150 focus:outline-none lg:h-10";
+const inputOk = "ring-1 ring-border-control hover:ring-mirage-700 focus:ring-2 focus:ring-accent-sky";
 const inputErr = "ring-[1.5px] ring-text-accent-on-light focus:ring-2";
 
 export function LeadForm({ city }: { city: string }) {
@@ -155,7 +155,7 @@ export function LeadForm({ city }: { city: string }) {
               <button
                 type="button"
                 onClick={() => update("email", emailSuggestion)}
-                className="font-semibold text-text-on-light underline underline-offset-2"
+                className="font-semibold text-text-on-light underline decoration-1 underline-offset-2 hover:decoration-2"
               >
                 {emailSuggestion}
               </button>
@@ -166,7 +166,7 @@ export function LeadForm({ city }: { city: string }) {
         {textField("phone", "Phone", "tel", "tel", "(602) 555-0100", { maxLength: 16, inputMode: "tel" })}
 
         <div>
-          <label className="flex items-start gap-2.5 text-sm leading-5 text-text-on-light-muted">
+          <label className="group flex cursor-pointer items-start gap-2.5 text-sm leading-5 text-text-on-light-muted">
             <span className="relative mt-px h-5 w-5 shrink-0">
               <input
                 ref={(el) => {
@@ -178,8 +178,8 @@ export function LeadForm({ city }: { city: string }) {
                 onChange={(event) => update("consent", event.target.checked)}
                 aria-invalid={Boolean(errors.consent)}
                 aria-describedby={describedBy("consent")}
-                className={`peer h-5 w-5 cursor-pointer appearance-none rounded-[6px] bg-bg-card ring-inset transition-colors checked:bg-action-primary checked:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sky ${
-                  errors.consent ? "ring-[1.5px] ring-text-accent-on-light" : "ring-[1.5px] ring-border-control"
+                className={`peer h-5 w-5 cursor-pointer appearance-none rounded-[6px] bg-bg-card ring-inset transition-[background-color,box-shadow] duration-150 checked:bg-action-primary checked:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sky ${
+                  errors.consent ? "ring-[1.5px] ring-text-accent-on-light" : "ring-[1.5px] ring-border-control group-hover:ring-mirage-700"
                 }`}
               />
               <svg
@@ -204,7 +204,7 @@ export function LeadForm({ city }: { city: string }) {
           type="submit"
           disabled={status === "submitting"}
           aria-busy={status === "submitting"}
-          className="mt-1 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-action-primary px-7 py-4 text-base font-semibold leading-6 text-action-primary-text transition-[filter,transform] hover:brightness-95 active:scale-[0.98] active:brightness-90 disabled:cursor-progress disabled:hover:brightness-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sky"
+          className="mt-1 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-action-primary px-7 py-4 text-base font-semibold leading-6 text-action-primary-text transition-[color,background-color,transform] duration-150 enabled:hover:bg-action-primary-hover enabled:hover:text-action-primary-hover-text enabled:active:scale-[0.98] disabled:cursor-progress focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sky"
         >
           {status === "submitting" ? (
             <>

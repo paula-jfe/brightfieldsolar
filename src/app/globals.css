@@ -34,6 +34,8 @@
   --color-text-accent-on-light: var(--color-trinidad-700);
   --color-action-primary: var(--color-candlelight-500);
   --color-action-primary-text: var(--color-mirage-950);
+  --color-action-primary-hover: var(--color-trinidad-700);
+  --color-action-primary-hover-text: var(--color-mirage-50);
   --color-accent-sky: var(--color-seagull-500);
   --color-accent-warm: var(--color-trinidad-600);
   --color-accent-sun: var(--color-candlelight-500);
@@ -83,6 +85,8 @@
   --color-text-accent-on-light: var(--color-text-accent-on-light);
   --color-action-primary: var(--color-action-primary);
   --color-action-primary-text: var(--color-action-primary-text);
+  --color-action-primary-hover: var(--color-action-primary-hover);
+  --color-action-primary-hover-text: var(--color-action-primary-hover-text);
   --color-accent-sky: var(--color-accent-sky);
   --color-accent-warm: var(--color-accent-warm);
   --color-accent-sun: var(--color-accent-sun);
@@ -126,6 +130,10 @@ html {
   :focus-visible {
     outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
   }
 }
 
@@ -171,7 +179,7 @@ html {
   border-radius: 999px;
   background: var(--color-bg-dark);
   border: 0;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .range::-moz-range-thumb {
   width: 24px;
@@ -179,6 +187,14 @@ html {
   border-radius: 999px;
   background: var(--color-bg-dark);
   border: 0;
+}
+@media (hover: hover) {
+  .range:hover::-webkit-slider-thumb {
+    box-shadow: 0 0 0 6px var(--color-bg-accent-soft);
+  }
+  .range:hover::-moz-range-thumb {
+    box-shadow: 0 0 0 6px var(--color-bg-accent-soft);
+  }
 }
 .range:active::-webkit-slider-thumb {
   transform: scale(1.15);
