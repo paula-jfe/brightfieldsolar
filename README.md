@@ -5,12 +5,11 @@
 | | |
 |---|---|
 | Time spent | Delivered within the 7-day deadline; I used the extra time for the tablet layout, tests and brand motion. About 5 days, Wednesday to Sunday: at least 4 hours a day, and more than 10 hours on some days. Wednesday: low-fidelity sketches (mobile and desktop). Thursday: design in Figma. Friday: code. Saturday: brand motion. Sunday: final adjustments, links and deploy. The video was recorded afterwards. |
-| Live page | _TODO: add URL_ |
+| Live page | https://brightfieldsolar.vercel.app/phoenix-az |
 | Design (Figma) | [BrightfieldSolar – Case 09](https://www.figma.com/design/jczaaU4dilJS2Qy7CxCtKs/BrightfieldSolar---Case-09) (view-only) |
 | Case study (Behance) | [Brightfield Solar](https://www.behance.net/gallery/256289617/Brightfield-Solar) |
 | Brand motion (YouTube) | [Brightfield Solar motion](https://youtu.be/w6442_yHNVA) |
 | Video walkthrough | _TODO: add URL_ |
-| Commit to evaluate | _TODO: add full hash_ |
 
 Brightfield Solar is a fictional company created for this exercise. Nothing on the page is a real offer.
 
@@ -218,7 +217,7 @@ Fonts (Hanken Grotesk for display, Inter for body) are variable fonts loaded wit
 
 The brief also says that at this step "the calculation would ask for 7 panels". At 80% the raw count is 6.84, which rounds up to 7, below the minimum of 8. At 100% it would be 8.55, rounding up to 9, and the minimum would never come into play.
 
-**What I concluded.** Only resetting coverage to the 80% default reproduces the brief's numbers, so selecting a profile sets the bill **and** resets coverage to 80%. It also makes product sense: a profile is a fresh starting point. The other rules follow from the same idea: moving the bill slider by hand deselects the profile (the bill no longer matches it), while moving coverage keeps it selected (coverage is not part of a profile). A component test clicks through all six rows of the brief's example in the real UI; when I removed the reset on purpose, that test failed at row 4, so it guards this decision.
+**What I concluded.** Only resetting coverage to the 80% default reproduces the brief's numbers, so selecting a profile sets the bill **and** resets coverage to 80%. It also makes product sense: a profile is a fresh starting point. The selected profile follows from the same idea: it is derived from the bill, so a profile is highlighted whenever the bill equals its typical bill. Moving the bill slider away clears it, moving it back restores it, and coverage never affects it (coverage is not part of a profile). A component test clicks through all six rows of the brief's example in the real UI; when I removed the reset on purpose, that test failed at row 4, so it guards this decision.
 
 ### 2. The accent blue failed contrast, and what replaced it
 
@@ -268,7 +267,7 @@ The E2E suite now runs axe with the WCAG 2.2 AA rules and fails on any violation
 
 The brief leaves some points open on purpose. How each one was resolved:
 
-1. **Selecting a profile resets coverage to 80%.** See [Decision 1](#1-what-happens-to-coverage-when-a-household-profile-is-selected). Moving the bill slider deselects the profile; moving coverage keeps it.
+1. **Selecting a profile resets coverage to 80%.** See [Decision 1](#1-what-happens-to-coverage-when-a-household-profile-is-selected). The highlighted profile is the one whose typical bill equals the current bill; coverage does not affect it.
 2. **The data schema was extended, additively.** Three optional fields were added to the Phoenix file, and the page falls back gracefully if a city omits them:
    - `shortLabel` on profiles, a shorter label for narrow screens
    - `icon` on profiles, an illustrative icon on desktop
@@ -303,7 +302,7 @@ The brief does not require tests. These exist because the simulator's rules are 
 - `format.test.ts`: currency, percent, years and panel-count formatting.
 
 **2. Components (Vitest + React Testing Library)**
-- `Simulator.test.tsx`: **clicks through the brief's example in the real UI** and checks the displayed numbers and which notes appear at each step, so it protects the coverage-reset decision. It also checks the savings bar split.
+- `Simulator.test.tsx`: **clicks through the brief's example in the real UI** and checks the displayed numbers and which notes appear at each step, so it protects the coverage-reset decision. It also checks that the selected profile follows the bill (it clears when the bill moves away and returns with it) and the savings bar split.
 - `LeadForm.test.tsx`: when errors appear, focus moving to the first invalid field, phone auto-format, the email suggestion, the consent rule, and the full send → confirm → reset cycle, including focus returning to the form.
 - `Header.test.tsx`: the mobile menu's state, and Escape returning focus to the menu button.
 - `FaqList.test.tsx`: the first answer open, answers present in the HTML, and items opening independently.
@@ -311,7 +310,7 @@ The brief does not require tests. These exist because the simulator's rules are 
 **3. Data contract (Vitest)**
 - `city-contract.test.ts`: runs against **every registered city**. It checks:
   - rates within range
-  - every profile's bill a value the slider can actually show (within 40–600 and on the $10 step)
+  - every profile's bill a value the slider can actually show (within 40–600 and on the $10 step), and different from the other profiles' bills
   - icons that exist
   - crew photos that exist in `public/`
   - valid testimonial dates
@@ -427,6 +426,14 @@ I also asked for the audits myself: a responsive review (type scale, radius and 
 - **Figma:** new variants came out squeezed inside a fixed-height component set, cloned tablet components lost their property links, and a tablet frame kept a 390 px max width. I spotted these in review; they were fixed and rechecked with screenshots.
 - **Test tooling:** a `SLOWMO` variable was documented but not wired into the Playwright config. I noticed nothing changed when running it.
 - **Copy:** the profile label "Apartment or condo" did not match the design; corrected.
+- **Interaction states:** hover and cursor states were incomplete and did not match Figma. I caught this on the live page (see the next section).
+
+### Issues I found on the live page, and how I resolved them
+I reviewed the deployed page myself and found three problems. For each one I asked for options, compared them on the real page, decided, and had the change made in Figma before the code.
+
+- **Hover states did not match the design.** The primary button only darkened slightly on hover, while Figma had it turn orange with white text. Buttons showed the default arrow cursor, because Tailwind v4 no longer sets `cursor: pointer` on buttons. The FAQ hover was practically invisible, and form fields had no hover at all. I asked for an audit of every clickable element. It showed that the orange in Figma (Trinidad/600) with white text is only 3.8:1, so I chose the darker Trinidad/700 (5.3:1). I then had the missing Hover and Focus variants added to the Figma components, plus a "States & interactions" frame that documents them, and only then the code: a pointer cursor on everything clickable, a small change on hover for each control, 150 ms transitions, and hover only on devices with a mouse.
+- **The carousel arrows' hover was too subtle.** White to light grey on a dark background was barely visible. I compared simulations on the real page (a darker grey, yellow, an inverted dark button and three soft glows), each showing the inactive, active and hover states side by side. I rejected yellow as too loud and the inverted version because it looked like a different state, and chose a soft white glow: clearly visible, and impossible to confuse with the yellow focus ring.
+- **The household profile lost its selection.** After moving the bill slider away from a profile's bill and back, the profile stayed unselected. The cause: the code stored which button had been clicked instead of comparing the bill with the profiles. I weighed turning the profiles into one-off action buttons against deriving the selection from the bill, and chose the second, so the screen can never contradict itself (see [Decision 1](#1-what-happens-to-coverage-when-a-household-profile-is-selected)). A component test covers moving away and back, and the data contract now requires every profile to have a different bill. While discussing it I noticed that a link sent to a partner does not carry the simulation, which became item 2 in [What is pending](#what-is-pending).
 
 ### How the output was verified
 - **The brief's worked example is an automated test,** at the formula level and clicked through the UI. When a behaviour mattered, I checked the test would fail without it; for example, removing the coverage reset makes the simulator test fail at row 4.
@@ -445,9 +452,10 @@ Ordered by impact on the business goals in the brief:
    - fire an analytics event the first time a visitor interacts with the simulator, and on lead submission, carrying those UTMs and the city slug
    
    This would work with GA4, Segment or similar, behind a consent banner if required.
-2. **Richer share preview.** The link is often forwarded to a partner. There is per-city Open Graph text, but no share image yet. A generated `opengraph-image` with the city name, rating and install count would make the preview look trustworthy.
-3. **Structured data for search and AI assistants.** Add JSON-LD `FAQPage` for the FAQ, and `LocalBusiness`/`Service` with the phone and rating, generated from the data file. Also add a `sitemap.xml` and `robots.txt` that list every city.
-4. **Unused data fields.** `utilityName`, `metroArea` and `popularNeighborhoods` could feed local-SEO copy, for example "serving Arcadia, Ahwatukee…" or "credits from Arizona Public Service".
-5. **A real lead endpoint** with server-side validation, rate limiting and spam protection (see [Security](#security)).
-6. **More cities.** The template and the data contract are ready. A second real city file would be the true test of the "one template, 120 cities" goal.
-7. **Minor cleanup.** A few component options are kept to match Figma but unused on this page: the large `Loader`, the light `Logo` tone, and a `Button` component next to `LinkButton`.
+2. **A shareable estimate link.** Most visitors send the page to someone they decide with, but the link opens with the default $220 and 80%, not their simulation. Next step: keep the bill and coverage in the URL (for example `/phoenix-az?bill=430&coverage=100`), validate them against the slider ranges, add a "Share my estimate" button, and keep `/phoenix-az` as the canonical URL so search engines still see one page per city.
+3. **Richer share preview.** The link is often forwarded to a partner. There is per-city Open Graph text, but no share image yet. A generated `opengraph-image` with the city name, rating and install count would make the preview look trustworthy.
+4. **Structured data for search and AI assistants.** Add JSON-LD `FAQPage` for the FAQ, and `LocalBusiness`/`Service` with the phone and rating, generated from the data file. Also add a `sitemap.xml` and `robots.txt` that list every city.
+5. **Unused data fields.** `utilityName`, `metroArea` and `popularNeighborhoods` could feed local-SEO copy, for example "serving Arcadia, Ahwatukee…" or "credits from Arizona Public Service".
+6. **A real lead endpoint** with server-side validation, rate limiting and spam protection (see [Security](#security)).
+7. **More cities.** The template and the data contract are ready. A second real city file would be the true test of the "one template, 120 cities" goal.
+8. **Minor cleanup.** A few component options are kept to match Figma but unused on this page: the large `Loader`, the light `Logo` tone, and a `Button` component next to `LinkButton`.

@@ -67,7 +67,7 @@ export function Carousel({
   }
 
   const arrowClass =
-    "flex h-11 w-11 items-center justify-center rounded-full bg-bg-card font-display text-2xl font-extrabold leading-none text-text-on-light ring-1 ring-border-light transition-[opacity,background-color] hover:enabled:bg-mirage-100 disabled:cursor-default disabled:opacity-35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sun";
+    "flex h-11 w-11 items-center justify-center rounded-full bg-bg-card font-display text-2xl font-extrabold leading-none text-text-on-light ring-1 ring-border-light transition-[opacity,box-shadow] duration-150 hover:enabled:shadow-[0_0_18px_2px_rgba(252,253,255,0.55)] disabled:cursor-default disabled:opacity-35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sun";
 
   return (
     <div role="region" aria-roledescription="carousel" aria-label={label}>

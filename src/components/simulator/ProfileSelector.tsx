@@ -22,17 +22,17 @@ export function ProfileSelector({
             type="button"
             onClick={() => onSelect(index)}
             aria-pressed={active}
-            className={`flex items-center gap-4 rounded-[var(--radius-inner)] p-3 text-left transition-[background-color,box-shadow,color] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sky ${
+            className={`group flex items-center gap-4 rounded-[var(--radius-inner)] p-3 text-left transition-[background-color,box-shadow,color] duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-sky ${
               active
                 ? "bg-bg-accent-soft ring-2 ring-inset ring-accent-sky"
-                : "bg-bg-card ring-1 ring-inset ring-border-light hover:ring-accent-sky"
+                : "bg-bg-card ring-1 ring-inset ring-border-light hover:bg-bg-light-muted hover:ring-accent-sky"
             }`}
           >
             {profile.icon && (
               <span
                 aria-hidden="true"
-                className={`hidden h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors md:flex lg:hidden xl:flex ${
-                  active ? "bg-bg-dark text-text-on-dark" : "bg-bg-light-muted text-text-on-light-muted"
+                className={`hidden h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors duration-150 md:flex lg:hidden xl:flex ${
+                  active ? "bg-bg-dark text-text-on-dark" : "bg-bg-light-muted text-text-on-light-muted group-hover:bg-bg-card"
                 }`}
               >
                 <ProfileIcon name={profile.icon} />

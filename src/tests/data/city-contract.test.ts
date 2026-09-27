@@ -48,6 +48,8 @@ describe.each(getAllCitySlugs())("city data: %s", (slug) => {
     }
     const labels = city.householdProfiles.map((profile) => profile.label);
     expect(new Set(labels).size, "profile labels must be unique (used as React keys)").toBe(labels.length);
+    const bills = city.householdProfiles.map((profile) => profile.typicalBill);
+    expect(new Set(bills).size, "profile bills must be unique (the selected profile is the one matching the bill)").toBe(bills.length);
   });
 
   test("crews are complete and their photos exist in /public", () => {
