@@ -9,7 +9,7 @@
 | Design (Figma) | [BrightfieldSolar – Case 09](https://www.figma.com/design/jczaaU4dilJS2Qy7CxCtKs/BrightfieldSolar---Case-09) (view-only) |
 | Case study (Behance) | [Brightfield Solar](https://www.behance.net/gallery/256289617/Brightfield-Solar) |
 | Brand motion (YouTube) | [Brightfield Solar motion](https://youtu.be/w6442_yHNVA) |
-| Video walkthrough | _TODO: add URL_ |
+| Video walkthrough | [youtu.be/lPRYIxoUAM8](https://youtu.be/lPRYIxoUAM8) (unlisted, in English) |
 
 Brightfield Solar is a fictional company created for this exercise. Nothing on the page is a real offer.
 
